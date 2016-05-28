@@ -1,0 +1,10 @@
+*.obj
+*.pp
+*.launch
+*.prefs
+*.map
+*.out
+*.xml
+*.mk
+*.opt
+Debug/makefile
