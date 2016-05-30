@@ -9,6 +9,7 @@
 #define DRIVERLIB_MSP430_LIB_MSP430_LIB_H_
 
 #include <UART.h>
+#include <ADC12.h>
 
 
 
