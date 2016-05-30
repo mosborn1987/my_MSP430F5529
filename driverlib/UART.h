@@ -23,11 +23,14 @@ unsigned char UART_buffer[100];
 ////////////////////////////////////////////////////////////////////////
 // Function Declaration - Each Function prototype is defined later
 void UART_init(void);
-void UART_get_array(unsigned char number_of_chars, unsigned char *RxArray);
+void UART_get_array( unsigned char *RxArray, unsigned char number_of_chars);
 char UART_get_single_char(void);
 void UARTSendArray(unsigned char *TxArray, unsigned char ArrayLength);
 void UARTSendChar( unsigned char);
 void UART_Test( void );
+
+void Print_String(const char *my_Char);
+void Print_String_NL(const char *my_Char);
 
 ////////////////////////////////////////////////////////////////////////
 // Configure clocks and hardware needed for the UART
@@ -51,7 +54,7 @@ void UART_init(void)
 
 ////////////////////////////////////////////////////////////////////////
 // Get an array of chars via pass by reference.
-void UART_get_array(unsigned char number_of_chars, unsigned char *RxArray)
+void UART_get_array(unsigned char *RxArray, unsigned char number_of_chars)
 {
 	////////////////////////////////////////////////////////////////////
 	// Iterative method of retriving chars
@@ -187,7 +190,7 @@ void Print_String(const char *my_Char)
 
 }
 
-void Print_String_Enter(const char *my_Char)
+void Print_String_NL(const char *my_Char)
 {
 	///////////////////////////////////////////////////////////////////
 	// Format buffer with string
