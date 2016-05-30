@@ -5,4 +5,5 @@
 void main(void)
 {
 	ADC12_INIT();
+
 }
