@@ -7,8 +7,8 @@ int main(void)
 
 	UART_init();
 
-	Print_String("HI, HOW ARE YOU DOING?");
-
+	Print_String("CHAR TO SEND: ");
+	UARTSendChar('B');
 
 	while(1){}
 
