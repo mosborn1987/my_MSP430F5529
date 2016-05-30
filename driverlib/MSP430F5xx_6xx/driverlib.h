@@ -30,6 +30,7 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * --/COPYRIGHT--*/
 #include "inc/hw_memmap.h"
+#include <MSP430_LIB.h>
 
 #include "adc10_a.h"
 #include "adc12_a.h"
