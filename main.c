@@ -83,30 +83,27 @@
 
 uint8_t transmitData = 0x00, receiveData = 0x00;
 uint8_t returnValue = 0x00;
+void pot_high(void);
+void pot_low(void);
 
 void main(void)
 {
     //Stop watchdog timer
     WDT_A_hold(WDT_A_BASE);
 
-    //Set P1.1 for slave reset
-    GPIO_setOutputHighOnPin(
 
-        GPIO_PORT_P1,
-        GPIO_PIN1
-        );
 
     //Set P1.1 for slave reset
     //Set P1.0 to output direction
     GPIO_setAsOutputPin(
         GPIO_PORT_P1,
-        GPIO_PIN0
+        GPIO_PIN6
         );
 
-    //P3.5,4,0 option select
+    //P3.0(UCB0SIMO), P3.1(UCB0SOMI) AND P3.2(UCB0CLK)	// P3.5,4,0 option select
     GPIO_setAsPeripheralModuleFunctionInputPin(
         GPIO_PORT_P3,
-        GPIO_PIN1 + GPIO_PIN2 + GPIO_PIN3
+        GPIO_PIN1 + GPIO_PIN2 + GPIO_PIN0
         );
 
     //Initialize Master
@@ -132,35 +129,85 @@ void main(void)
     USCI_B_SPI_enableInterrupt(USCI_B0_BASE, USCI_B_SPI_RECEIVE_INTERRUPT);
 
     //Now with SPI signals initialized, reset slave
-    GPIO_setOutputLowOnPin(
-        GPIO_PORT_P1,
-        GPIO_PIN1
-        );
+//    GPIO_setOutputLowOnPin(
+//        GPIO_PORT_P1,
+//        GPIO_PIN6
+//        );
 
-    //LED On
-    GPIO_setOutputHighOnPin(
-        GPIO_PORT_P1,
-        GPIO_PIN0
-        );
+    pot_high();
+    pot_low();
+//    //LED On
+//    GPIO_setOutputHighOnPin(
+//        GPIO_PORT_P1,
+//        GPIO_PIN0
+//        );
 
     //Wait for slave to initialize
     __delay_cycles(100);
 
-    //Initialize data values
-    transmitData = 0x00;
 
-    //USCI_A0 TX buffer ready?
-    while(!USCI_B_SPI_getInterruptStatus(USCI_B0_BASE,
-                                         USCI_B_SPI_TRANSMIT_INTERRUPT))
+    uint8_t POT_COMMAND = 0x11;// B00010001;
+    //Initialize data values
+    transmitData = 0xFF;
+    while(1)
     {
-        ;
+
+    	while(transmitData--)
+    	{
+    		pot_low();
+    	    //USCI_A0 TX buffer ready?
+    	    while(!USCI_B_SPI_getInterruptStatus(USCI_B0_BASE,
+    	                                         USCI_B_SPI_TRANSMIT_INTERRUPT))
+    	    {
+    	        ;
+    	    }
+
+    	    //Transmit Data to slave
+    	    USCI_B_SPI_transmitData(USCI_B0_BASE, POT_COMMAND);
+
+    	    //USCI_A0 TX buffer ready?
+    	    while(!USCI_B_SPI_getInterruptStatus(USCI_B0_BASE,
+    	                                         USCI_B_SPI_TRANSMIT_INTERRUPT))
+    	    {
+    	        ;
+    	    }
+
+    	    //Transmit Data to slave
+    	    USCI_B_SPI_transmitData(USCI_B0_BASE, transmitData);
+    	    pot_high();
+
+    	    __delay_cycles(100);
+
+    	}
+    	transmitData = 0xFF;
     }
 
-    //Transmit Data to slave
-    USCI_B_SPI_transmitData(USCI_B0_BASE, transmitData);
 
     //CPU off, enable interrupts
     __bis_SR_register(LPM0_bits + GIE);
+}
+
+
+
+
+
+void pot_high(void)
+{
+	//Set P1.1 for slave reset
+	    GPIO_setOutputHighOnPin(
+
+	        GPIO_PORT_P1,
+	        GPIO_PIN6
+	        );
+}
+
+void pot_low(void)
+{
+    //Now with SPI signals initialized, reset slave
+    GPIO_setOutputLowOnPin(
+        GPIO_PORT_P1,
+        GPIO_PIN6
+        );
 }
 
 //******************************************************************************
