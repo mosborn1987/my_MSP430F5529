@@ -148,11 +148,13 @@ void main(void)
 
     uint8_t POT_COMMAND = 0x11;// B00010001;
     //Initialize data values
-    transmitData = 0xFF;
+    uint8_t low_value = 0x10;
+    uint8_t high_value = 0x7F;
+    transmitData = high_value;
     while(1)
     {
 
-    	while(transmitData--)
+    	while(transmitData--!=low_value)
     	{
     		pot_low();
     	    //USCI_A0 TX buffer ready?
@@ -165,21 +167,53 @@ void main(void)
     	    //Transmit Data to slave
     	    USCI_B_SPI_transmitData(USCI_B0_BASE, POT_COMMAND);
 
-    	    //USCI_A0 TX buffer ready?
-    	    while(!USCI_B_SPI_getInterruptStatus(USCI_B0_BASE,
-    	                                         USCI_B_SPI_TRANSMIT_INTERRUPT))
-    	    {
-    	        ;
-    	    }
+//    	    //USCI_A0 TX buffer ready?
+//    	    while(!USCI_B_SPI_getInterruptStatus(USCI_B0_BASE,
+//    	                                         USCI_B_SPI_TRANSMIT_INTERRUPT))
+//    	    {
+//    	        ;
+//    	    }
 
     	    //Transmit Data to slave
     	    USCI_B_SPI_transmitData(USCI_B0_BASE, transmitData);
     	    pot_high();
 
-    	    __delay_cycles(100);
+    	    __delay_cycles(10000);
+    	    __delay_cycles(10000);
+//    	    __delay_cycles(10000);
 
     	}
-    	transmitData = 0xFF;
+
+    	while(transmitData++ != high_value )
+    	    	{
+    	    		pot_low();
+    	    	    //USCI_A0 TX buffer ready?
+    	    	    while(!USCI_B_SPI_getInterruptStatus(USCI_B0_BASE,
+    	    	                                         USCI_B_SPI_TRANSMIT_INTERRUPT))
+    	    	    {
+    	    	        ;
+    	    	    }
+
+    	    	    //Transmit Data to slave
+    	    	    USCI_B_SPI_transmitData(USCI_B0_BASE, POT_COMMAND);
+
+    	    	    //USCI_A0 TX buffer ready?
+//    	    	    while(!USCI_B_SPI_getInterruptStatus(USCI_B0_BASE,
+//    	    	                                         USCI_B_SPI_TRANSMIT_INTERRUPT))
+//    	    	    {
+//    	    	        ;
+//    	    	    }
+
+    	    	    //Transmit Data to slave
+    	    	    USCI_B_SPI_transmitData(USCI_B0_BASE, transmitData);
+    	    	    pot_high();
+
+    	    	    __delay_cycles(10000);
+    	    	    __delay_cycles(10000);
+    	//    	    __delay_cycles(10000);
+
+    	    	}
+//    	transmitData = delay_value;
     }
 
 
