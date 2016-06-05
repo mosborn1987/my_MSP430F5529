@@ -78,6 +78,7 @@ void init_pot(void);
 void init_SS_GPIO(SLAVE_SELECT *PARAM);
 void enable_SLAVE(SLAVE_SELECT *PARAM);
 void disable_SLAVE(SLAVE_SELECT *PARAM);
+void init_SPI_B0(void);
 
 void init_SS_GPIO(SLAVE_SELECT *PARAM)
 {
@@ -143,6 +144,38 @@ void set_SLAVE_LOW(SLAVE_SELECT *PARAM)
         );
 }
 
+void init_SPI_B0(void)
+{
+	//P3.0(UCB0SIMO), P3.1(UCB0SOMI) AND P3.2(UCB0CLK)	// P3.5,4,0 option select
+	    GPIO_setAsPeripheralModuleFunctionInputPin(
+	        GPIO_PORT_P3,
+	        GPIO_PIN1 + GPIO_PIN2 + GPIO_PIN0
+	        );
+
+	    //Initialize Master
+	    USCI_B_SPI_initMasterParam param = {0};
+	    param.selectClockSource = USCI_B_SPI_CLOCKSOURCE_SMCLK;
+	    param.clockSourceFrequency = UCS_getSMCLK();
+	    param.desiredSpiClock = SPICLK;
+	    param.msbFirst = USCI_B_SPI_MSB_FIRST;
+	    param.clockPhase = USCI_B_SPI_PHASE_DATA_CHANGED_ONFIRST_CAPTURED_ON_NEXT;
+	    param.clockPolarity = USCI_B_SPI_CLOCKPOLARITY_INACTIVITY_HIGH;
+	    returnValue = USCI_B_SPI_initMaster(USCI_B0_BASE, &param);
+
+	    if(STATUS_FAIL == returnValue)
+	    {
+	        return;
+	    }
+
+	    //Enable SPI module
+	    USCI_B_SPI_enable(USCI_B0_BASE);
+
+	    //Enable Receive interrupt
+	    USCI_B_SPI_clearInterrupt(USCI_B0_BASE, USCI_B_SPI_RECEIVE_INTERRUPT);
+	    USCI_B_SPI_enableInterrupt(USCI_B0_BASE, USCI_B_SPI_RECEIVE_INTERRUPT);
+	    return;
+
+}
 
 
 void init_pot(void)
@@ -157,34 +190,11 @@ void init_pot(void)
     // INITIALIZE GPIO
 	init_SS_GPIO(&DIGI_POT);
 
+	//
+	init_SPI_B0();
 
-    //P3.0(UCB0SIMO), P3.1(UCB0SOMI) AND P3.2(UCB0CLK)	// P3.5,4,0 option select
-    GPIO_setAsPeripheralModuleFunctionInputPin(
-        GPIO_PORT_P3,
-        GPIO_PIN1 + GPIO_PIN2 + GPIO_PIN0
-        );
 
-    //Initialize Master
-    USCI_B_SPI_initMasterParam param = {0};
-    param.selectClockSource = USCI_B_SPI_CLOCKSOURCE_SMCLK;
-    param.clockSourceFrequency = UCS_getSMCLK();
-    param.desiredSpiClock = SPICLK;
-    param.msbFirst = USCI_B_SPI_MSB_FIRST;
-    param.clockPhase = USCI_B_SPI_PHASE_DATA_CHANGED_ONFIRST_CAPTURED_ON_NEXT;
-    param.clockPolarity = USCI_B_SPI_CLOCKPOLARITY_INACTIVITY_HIGH;
-    returnValue = USCI_B_SPI_initMaster(USCI_B0_BASE, &param);
 
-    if(STATUS_FAIL == returnValue)
-    {
-        return;
-    }
-
-    //Enable SPI module
-    USCI_B_SPI_enable(USCI_B0_BASE);
-
-    //Enable Receive interrupt
-    USCI_B_SPI_clearInterrupt(USCI_B0_BASE, USCI_B_SPI_RECEIVE_INTERRUPT);
-    USCI_B_SPI_enableInterrupt(USCI_B0_BASE, USCI_B_SPI_RECEIVE_INTERRUPT);
 
     set_SLAVE_HIGH(&DIGI_POT);
     enable_SLAVE(&DIGI_POT);
