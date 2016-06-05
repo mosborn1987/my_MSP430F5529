@@ -233,7 +233,7 @@ void init_pot(void)
 
     	    //Transmit Data to slave
     	    USCI_B_SPI_transmitData(USCI_B0_BASE, transmitData);
-    	    set_SLAVE_HIGH(&DIGI_POT);
+    	    disable_SLAVE(&DIGI_POT);
 
     	    __delay_cycles(10000);
     	    __delay_cycles(10000);
@@ -262,7 +262,7 @@ void init_pot(void)
 
     	    	    //Transmit Data to slave
     	    	    USCI_B_SPI_transmitData(USCI_B0_BASE, transmitData);
-    	    	    set_SLAVE_HIGH(&DIGI_POT);
+    	    	    disable_SLAVE(&DIGI_POT);
 
     	    	    __delay_cycles(10000);
     	    	    __delay_cycles(10000);
