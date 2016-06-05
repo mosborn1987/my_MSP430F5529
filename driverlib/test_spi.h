@@ -58,6 +58,8 @@
 //
 //*****************************************************************************
 #define SPICLK                          500000
+uint8_t transmitData = 0x00, receiveData = 0x00;
+uint8_t returnValue = 0x00;
 
 enum CS_ACTIVE_VALUE{
 	ACTIVE_LOW,
@@ -70,16 +72,13 @@ typedef struct SLAVE_SELECT{
 	int SS_ACTIVE_VALUE;
 }SLAVE_SELECT;
 
-
-
-uint8_t transmitData = 0x00, receiveData = 0x00;
-uint8_t returnValue = 0x00;
 void set_SLAVE_HIGH(SLAVE_SELECT *PARAM);
 void set_SLAVE_LOW(SLAVE_SELECT *PARAM);
 void init_pot(void);
 
 void enable_SLAVE(SLAVE_SELECT *PARAM);
 void disable_SLAVE(SLAVE_SELECT *PARAM);
+
 
 void enable_SLAVE(SLAVE_SELECT *PARAM)
 {
@@ -97,13 +96,10 @@ void enable_SLAVE(SLAVE_SELECT *PARAM)
 	}
 	return;
 
-
 }
 
 void disable_SLAVE(SLAVE_SELECT *PARAM)
 {
-
-
 	// IF SLAVE IS ACTIVE HIGH, BRING THE CHIP LOW - TO DISABLE
 	if(PARAM->SS_ACTIVE_VALUE == ACTIVE_HIGH)
 	{
@@ -123,8 +119,8 @@ void set_SLAVE_HIGH(SLAVE_SELECT *PARAM)
 {
 	//Set P1.1 for slave reset
 	    GPIO_setOutputHighOnPin(
-	        GPIO_PORT_P1,
-	        GPIO_PIN6
+			PARAM->PORT,
+			PARAM->PIN
 	        );
 }
 
