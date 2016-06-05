@@ -75,9 +75,19 @@ typedef struct SLAVE_SELECT{
 void set_SLAVE_HIGH(SLAVE_SELECT *PARAM);
 void set_SLAVE_LOW(SLAVE_SELECT *PARAM);
 void init_pot(void);
-
+void init_SS_GPIO(SLAVE_SELECT *PARAM);
 void enable_SLAVE(SLAVE_SELECT *PARAM);
 void disable_SLAVE(SLAVE_SELECT *PARAM);
+
+void init_SS_GPIO(SLAVE_SELECT *PARAM)
+{
+    //Set P1.1 for slave reset
+    //Set P1.0 to output direction
+    GPIO_setAsOutputPin(
+        PARAM->PORT,
+        PARAM->PIN
+        );
+}
 
 
 void enable_SLAVE(SLAVE_SELECT *PARAM)
@@ -144,13 +154,10 @@ void init_pot(void)
 			DIGI_POT.SS_ACTIVE_VALUE = ACTIVE_LOW
 	};
 
-
     //Set P1.1 for slave reset
     //Set P1.0 to output direction
-    GPIO_setAsOutputPin(
-        GPIO_PORT_P1,
-        GPIO_PIN6
-        );
+	init_SS_GPIO(&DIGI_POT);
+
 
     //P3.0(UCB0SIMO), P3.1(UCB0SOMI) AND P3.2(UCB0CLK)	// P3.5,4,0 option select
     GPIO_setAsPeripheralModuleFunctionInputPin(
