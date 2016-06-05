@@ -78,8 +78,19 @@ void set_SLAVE_HIGH(SLAVE_SELECT *PARAM);
 void set_SLAVE_LOW(SLAVE_SELECT *PARAM);
 void init_pot(void);
 
-void enable_SLAVE(void);
-void disable_SLAVE(void);
+void enable_SLAVE(SLAVE_SELECT *PARAM);
+void disable_SLAVE(SLAVE_SELECT *PARAM);
+
+void enable_SLAVE(SLAVE_SELECT *PARAM)
+{
+	set_SLAVE_LOW(PARAM);
+}
+
+void disable_SLAVE(SLAVE_SELECT *PARAM)
+{
+	set_SLAVE_HIGH(PARAM);
+
+}
 
 void set_SLAVE_HIGH(SLAVE_SELECT *PARAM)
 {
@@ -153,7 +164,7 @@ void init_pot(void)
 //        );
 
     set_SLAVE_HIGH(&DIGI_POT);
-    set_SLAVE_LOW(&DIGI_POT);
+    enable_SLAVE(&DIGI_POT);
 //    //LED On
 //    GPIO_setOutputHighOnPin(
 //        GPIO_PORT_P1,
@@ -174,7 +185,7 @@ void init_pot(void)
 
     	while(transmitData--!=low_value)
     	{
-    		set_SLAVE_LOW(&DIGI_POT);
+    		enable_SLAVE(&DIGI_POT);
     	    //USCI_A0 TX buffer ready?
     	    while(!USCI_B_SPI_getInterruptStatus(USCI_B0_BASE,
     	                                         USCI_B_SPI_TRANSMIT_INTERRUPT))
@@ -204,7 +215,7 @@ void init_pot(void)
 
     	while(transmitData++ != high_value )
     	    	{
-    		set_SLAVE_LOW(&DIGI_POT);
+    		enable_SLAVE(&DIGI_POT);
     	    	    //USCI_A0 TX buffer ready?
     	    	    while(!USCI_B_SPI_getInterruptStatus(USCI_B0_BASE,
     	    	                                         USCI_B_SPI_TRANSMIT_INTERRUPT))
