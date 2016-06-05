@@ -74,14 +74,14 @@ typedef struct SLAVE_SELECT{
 
 uint8_t transmitData = 0x00, receiveData = 0x00;
 uint8_t returnValue = 0x00;
-void set_SLAVE_HIGH(void);
+void set_SLAVE_HIGH(SLAVE_SELECT *PARAM);
 void set_SLAVE_LOW(SLAVE_SELECT *PARAM);
 void init_pot(void);
 
 void enable_SLAVE(void);
 void disable_SLAVE(void);
 
-void set_SLAVE_HIGH(void)
+void set_SLAVE_HIGH(SLAVE_SELECT *PARAM)
 {
 	//Set P1.1 for slave reset
 	    GPIO_setOutputHighOnPin(
@@ -152,7 +152,7 @@ void init_pot(void)
 //        GPIO_PIN6
 //        );
 
-    set_SLAVE_HIGH();
+    set_SLAVE_HIGH(&DIGI_POT);
     set_SLAVE_LOW(&DIGI_POT);
 //    //LED On
 //    GPIO_setOutputHighOnPin(
@@ -194,7 +194,7 @@ void init_pot(void)
 
     	    //Transmit Data to slave
     	    USCI_B_SPI_transmitData(USCI_B0_BASE, transmitData);
-    	    set_SLAVE_HIGH();
+    	    set_SLAVE_HIGH(&DIGI_POT);
 
     	    __delay_cycles(10000);
     	    __delay_cycles(10000);
@@ -224,7 +224,7 @@ void init_pot(void)
 
     	    	    //Transmit Data to slave
     	    	    USCI_B_SPI_transmitData(USCI_B0_BASE, transmitData);
-    	    	    set_SLAVE_HIGH();
+    	    	    set_SLAVE_HIGH(&DIGI_POT);
 
     	    	    __delay_cycles(10000);
     	    	    __delay_cycles(10000);
