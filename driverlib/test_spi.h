@@ -154,8 +154,7 @@ void init_pot(void)
 			DIGI_POT.SS_ACTIVE_VALUE = ACTIVE_LOW
 	};
 
-    //Set P1.1 for slave reset
-    //Set P1.0 to output direction
+    // INITIALIZE GPIO
 	init_SS_GPIO(&DIGI_POT);
 
 
@@ -187,19 +186,8 @@ void init_pot(void)
     USCI_B_SPI_clearInterrupt(USCI_B0_BASE, USCI_B_SPI_RECEIVE_INTERRUPT);
     USCI_B_SPI_enableInterrupt(USCI_B0_BASE, USCI_B_SPI_RECEIVE_INTERRUPT);
 
-    //Now with SPI signals initialized, reset slave
-//    GPIO_setOutputLowOnPin(
-//        GPIO_PORT_P1,
-//        GPIO_PIN6
-//        );
-
     set_SLAVE_HIGH(&DIGI_POT);
     enable_SLAVE(&DIGI_POT);
-//    //LED On
-//    GPIO_setOutputHighOnPin(
-//        GPIO_PORT_P1,
-//        GPIO_PIN0
-//        );
 
     //Wait for slave to initialize
     __delay_cycles(100);
@@ -227,11 +215,11 @@ void init_pot(void)
     	    USCI_B_SPI_transmitData(USCI_B0_BASE, POT_COMMAND);
 
 //    	    //USCI_A0 TX buffer ready?
-//    	    while(!USCI_B_SPI_getInterruptStatus(USCI_B0_BASE,
-//    	                                         USCI_B_SPI_TRANSMIT_INTERRUPT))
-//    	    {
-//    	        ;
-//    	    }
+    	    while(!USCI_B_SPI_getInterruptStatus(USCI_B0_BASE,
+    	                                         USCI_B_SPI_TRANSMIT_INTERRUPT))
+    	    {
+    	        ;
+    	    }
 
     	    //Transmit Data to slave
     	    USCI_B_SPI_transmitData(USCI_B0_BASE, transmitData);
@@ -239,7 +227,6 @@ void init_pot(void)
 
     	    __delay_cycles(10000);
     	    __delay_cycles(10000);
-//    	    __delay_cycles(10000);
 
     	}
 
@@ -256,12 +243,12 @@ void init_pot(void)
     	    	    //Transmit Data to slave
     	    	    USCI_B_SPI_transmitData(USCI_B0_BASE, POT_COMMAND);
 
-    	    	    //USCI_A0 TX buffer ready?
-//    	    	    while(!USCI_B_SPI_getInterruptStatus(USCI_B0_BASE,
-//    	    	                                         USCI_B_SPI_TRANSMIT_INTERRUPT))
-//    	    	    {
-//    	    	        ;
-//    	    	    }
+//    	    	    USCI_A0 TX buffer ready?
+    	    	    while(!USCI_B_SPI_getInterruptStatus(USCI_B0_BASE,
+    	    	                                         USCI_B_SPI_TRANSMIT_INTERRUPT))
+    	    	    {
+    	    	        ;
+    	    	    }
 
     	    	    //Transmit Data to slave
     	    	    USCI_B_SPI_transmitData(USCI_B0_BASE, transmitData);
@@ -269,10 +256,8 @@ void init_pot(void)
 
     	    	    __delay_cycles(10000);
     	    	    __delay_cycles(10000);
-    	//    	    __delay_cycles(10000);
 
     	    	}
-//    	transmitData = delay_value;
     }
 
 
