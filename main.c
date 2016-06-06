@@ -17,7 +17,7 @@ void main(void)
 			DIGI_POT.SS_ACTIVE_VALUE = ACTIVE_LOW
 	};
 
-    init_pot(&DIGI_POT);
+    init_SLAVE(&DIGI_POT);
 
     //    uint8_t POT_COMMAND = 0x11;// B00010001;
         uint8_t transmitData = 0x00;

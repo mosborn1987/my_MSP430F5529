@@ -72,9 +72,15 @@ typedef struct SLAVE_SELECT{
 	int SS_ACTIVE_VALUE;
 }SLAVE_SELECT;
 
+typedef struct TARGET_COMMANDS{
+	uint8_t WRITE;
+	uint8_t READ;
+	uint8_t SHUT_DOWN;
+}TARGET_COMMANDS;
+
 void set_SLAVE_HIGH(SLAVE_SELECT *PARAM);
 void set_SLAVE_LOW(SLAVE_SELECT *PARAM);
-void init_pot(SLAVE_SELECT *PARAM);
+void init_SLAVE(SLAVE_SELECT *PARAM);
 void init_SS_GPIO(SLAVE_SELECT *PARAM);
 void enable_SLAVE(SLAVE_SELECT *PARAM);
 void disable_SLAVE(SLAVE_SELECT *PARAM);
@@ -180,7 +186,7 @@ void init_SPI_B0(void)
 }
 
 
-void init_pot(SLAVE_SELECT *PARAM)
+void init_SLAVE(SLAVE_SELECT *PARAM)
 {
     // INITIALIZE GPIO
 	init_SS_GPIO(PARAM);
