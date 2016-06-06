@@ -242,12 +242,12 @@ void init_pot(void)
 
     	}
 
-while(transmitData++ != high_value )
-		{
-//			enable_SLAVE(&DIGI_POT);
+    	while(transmitData++ != high_value )
+    	{
+    		// TRANSMIT DATA
 			sent_tx(&DIGI_POT, transmitData);
-//			disable_SLAVE(&DIGI_POT);
 
+			// TIME DELAY
 			__delay_cycles(10000);
 			__delay_cycles(10000);
 
