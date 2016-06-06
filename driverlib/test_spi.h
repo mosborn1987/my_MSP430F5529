@@ -80,6 +80,8 @@ void enable_SLAVE(SLAVE_SELECT *PARAM);
 void disable_SLAVE(SLAVE_SELECT *PARAM);
 void init_SPI_B0(void);
 
+void sent_tx(SLAVE_SELECT *PARAM, uint8_t *tx_data);
+
 void init_SS_GPIO(SLAVE_SELECT *PARAM)
 {
     //Set P1.1 for slave reset
@@ -240,34 +242,16 @@ void init_pot(void)
 
     	}
 
-    	while(transmitData++ != high_value )
-    	    	{
-    		enable_SLAVE(&DIGI_POT);
-    	    	    //USCI_A0 TX buffer ready?
-    	    	    while(!USCI_B_SPI_getInterruptStatus(USCI_B0_BASE,
-    	    	                                         USCI_B_SPI_TRANSMIT_INTERRUPT))
-    	    	    {
-    	    	        ;
-    	    	    }
+while(transmitData++ != high_value )
+		{
+			enable_SLAVE(&DIGI_POT);
+			sent_tx(&DIGI_POT, transmitData);
+			disable_SLAVE(&DIGI_POT);
 
-    	    	    //Transmit Data to slave
-    	    	    USCI_B_SPI_transmitData(USCI_B0_BASE, POT_COMMAND);
+			__delay_cycles(10000);
+			__delay_cycles(10000);
 
-//    	    	    USCI_A0 TX buffer ready?
-    	    	    while(!USCI_B_SPI_getInterruptStatus(USCI_B0_BASE,
-    	    	                                         USCI_B_SPI_TRANSMIT_INTERRUPT))
-    	    	    {
-    	    	        ;
-    	    	    }
-
-    	    	    //Transmit Data to slave
-    	    	    USCI_B_SPI_transmitData(USCI_B0_BASE, transmitData);
-    	    	    disable_SLAVE(&DIGI_POT);
-
-    	    	    __delay_cycles(10000);
-    	    	    __delay_cycles(10000);
-
-    	    	}
+		}
     }
 
 
@@ -276,7 +260,28 @@ void init_pot(void)
 }
 
 
+void sent_tx(SLAVE_SELECT *PARAM, uint8_t *tx_data)
+{
+	//USCI_A0 TX buffer ready?
+				while(!USCI_B_SPI_getInterruptStatus(USCI_B0_BASE,
+													 USCI_B_SPI_TRANSMIT_INTERRUPT))
+				{
+					;
+				}
 
+				//Transmit Data to slave
+				USCI_B_SPI_transmitData(USCI_B0_BASE, 0x11);
+
+	//    	    	    USCI_A0 TX buffer ready?
+				while(!USCI_B_SPI_getInterruptStatus(USCI_B0_BASE,
+													 USCI_B_SPI_TRANSMIT_INTERRUPT))
+				{
+					;
+				}
+
+				//Transmit Data to slave
+				USCI_B_SPI_transmitData(USCI_B0_BASE, tx_data);
+}
 
 
 //******************************************************************************
