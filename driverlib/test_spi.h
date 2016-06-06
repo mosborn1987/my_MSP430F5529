@@ -74,7 +74,7 @@ typedef struct SLAVE_SELECT{
 
 void set_SLAVE_HIGH(SLAVE_SELECT *PARAM);
 void set_SLAVE_LOW(SLAVE_SELECT *PARAM);
-void init_pot(void);
+void init_pot(SLAVE_SELECT *PARAM);
 void init_SS_GPIO(SLAVE_SELECT *PARAM);
 void enable_SLAVE(SLAVE_SELECT *PARAM);
 void disable_SLAVE(SLAVE_SELECT *PARAM);
@@ -180,26 +180,17 @@ void init_SPI_B0(void)
 }
 
 
-void init_pot(void)
+void init_pot(SLAVE_SELECT *PARAM)
 {
 
-	SLAVE_SELECT DIGI_POT = {
-			DIGI_POT.PORT = GPIO_PORT_P1,
-			DIGI_POT.PIN = GPIO_PIN6,
-			DIGI_POT.SS_ACTIVE_VALUE = ACTIVE_LOW
-	};
-
     // INITIALIZE GPIO
-	init_SS_GPIO(&DIGI_POT);
+	init_SS_GPIO(PARAM);
 
-	//
+	// INITIALIZE SPI CHANNEL B0
 	init_SPI_B0();
 
-
-
-
-    set_SLAVE_HIGH(&DIGI_POT);
-    enable_SLAVE(&DIGI_POT);
+	set_SLAVE_HIGH(PARAM);
+    enable_SLAVE(PARAM);
 
     //Wait for slave to initialize
     __delay_cycles(100);
@@ -219,7 +210,7 @@ void init_pot(void)
     	while(transmitData--!=low_value)
     	{
     		// TRANSMIT DATA
-			sent_tx(&DIGI_POT, transmitData);
+			sent_tx(PARAM, transmitData);
 
 			// TIME DELAY
 			__delay_cycles(10000);
@@ -229,7 +220,7 @@ void init_pot(void)
     	while(transmitData++ != high_value )
     	{
     		// TRANSMIT DATA
-			sent_tx(&DIGI_POT, transmitData);
+			sent_tx(PARAM, transmitData);
 
 			// TIME DELAY
 			__delay_cycles(10000);
