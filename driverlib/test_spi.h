@@ -72,6 +72,7 @@ typedef struct SLAVE_SELECT{
 	int SS_ACTIVE_VALUE;
 }SLAVE_SELECT;
 
+// THIS MAY BE USED LATTER
 typedef struct TARGET_COMMANDS{
 	uint8_t WRITE;
 	uint8_t READ;
