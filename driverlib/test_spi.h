@@ -182,56 +182,19 @@ void init_SPI_B0(void)
 
 void init_pot(SLAVE_SELECT *PARAM)
 {
-
     // INITIALIZE GPIO
 	init_SS_GPIO(PARAM);
 
-	// INITIALIZE SPI CHANNEL B0
-	init_SPI_B0();
-
-	set_SLAVE_HIGH(PARAM);
+	// RESET SLAVE SELECT
+	disable_SLAVE(PARAM);
     enable_SLAVE(PARAM);
 
     //Wait for slave to initialize
     __delay_cycles(100);
-
-
-//    uint8_t POT_COMMAND = 0x11;// B00010001;
-    uint8_t transmitData = 0x00;
-    //Initialize data values
-    uint8_t low_value = 0x10;
-    uint8_t high_value = 0x7F;
-    transmitData = high_value;
-
-    // TEST WRITE
-    while(1)
-    {
-
-    	while(transmitData--!=low_value)
-    	{
-    		// TRANSMIT DATA
-			sent_tx(PARAM, transmitData);
-
-			// TIME DELAY
-			__delay_cycles(10000);
-			__delay_cycles(10000);
-    	}
-
-    	while(transmitData++ != high_value )
-    	{
-    		// TRANSMIT DATA
-			sent_tx(PARAM, transmitData);
-
-			// TIME DELAY
-			__delay_cycles(10000);
-			__delay_cycles(10000);
-
-		}
-    }
-
+    return;
 
     //CPU off, enable interrupts
-    __bis_SR_register(LPM0_bits + GIE);
+//    __bis_SR_register(LPM0_bits + GIE);
 }
 
 
