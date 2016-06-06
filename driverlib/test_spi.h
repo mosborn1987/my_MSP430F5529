@@ -269,7 +269,7 @@ void sent_tx(SLAVE_SELECT *PARAM, uint8_t *tx_data)
 
 	//USCI_A0 TX buffer ready?
 	while(!USCI_B_SPI_getInterruptStatus(USCI_B0_BASE,
-										 USCI_B_SPI_TRANSMIT_INTERRUPT))
+			USCI_B_SPI_TRANSMIT_INTERRUPT))
 	{
 		;
 	}
@@ -277,17 +277,17 @@ void sent_tx(SLAVE_SELECT *PARAM, uint8_t *tx_data)
 	//Transmit Data to slave
 	USCI_B_SPI_transmitData(USCI_B0_BASE, POT_COMMAND);
 
-	//    	    	    USCI_A0 TX buffer ready?
-				while(!USCI_B_SPI_getInterruptStatus(USCI_B0_BASE,
-													 USCI_B_SPI_TRANSMIT_INTERRUPT))
-				{
-					;
-				}
+	//USCI_A0 TX buffer ready?
+	while(!USCI_B_SPI_getInterruptStatus(USCI_B0_BASE,
+			USCI_B_SPI_TRANSMIT_INTERRUPT))
+	{
+		;
+	}
 
-				//Transmit Data to slave
-				USCI_B_SPI_transmitData(USCI_B0_BASE, tx_data);
+	//Transmit Data to slave
+	USCI_B_SPI_transmitData(USCI_B0_BASE, tx_data);
 
-				disable_SLAVE(PARAM);
+	disable_SLAVE(PARAM);
 }
 
 
