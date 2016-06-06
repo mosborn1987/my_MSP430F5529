@@ -58,7 +58,7 @@
 //
 //*****************************************************************************
 #define SPICLK                          500000
-uint8_t transmitData = 0x00, receiveData = 0x00;
+//uint8_t transmitData = 0x00, receiveData = 0x00;
 uint8_t returnValue = 0x00;
 
 enum CS_ACTIVE_VALUE{
@@ -205,41 +205,25 @@ void init_pot(void)
     __delay_cycles(100);
 
 
-    uint8_t POT_COMMAND = 0x11;// B00010001;
+//    uint8_t POT_COMMAND = 0x11;// B00010001;
+    uint8_t transmitData = 0x00;
     //Initialize data values
     uint8_t low_value = 0x10;
     uint8_t high_value = 0x7F;
     transmitData = high_value;
+
+    // TEST WRITE
     while(1)
     {
 
     	while(transmitData--!=low_value)
     	{
-    		enable_SLAVE(&DIGI_POT);
-    	    //USCI_A0 TX buffer ready?
-    	    while(!USCI_B_SPI_getInterruptStatus(USCI_B0_BASE,
-    	                                         USCI_B_SPI_TRANSMIT_INTERRUPT))
-    	    {
-    	        ;
-    	    }
+    		// TRANSMIT DATA
+			sent_tx(&DIGI_POT, transmitData);
 
-    	    //Transmit Data to slave
-    	    USCI_B_SPI_transmitData(USCI_B0_BASE, POT_COMMAND);
-
-//    	    //USCI_A0 TX buffer ready?
-    	    while(!USCI_B_SPI_getInterruptStatus(USCI_B0_BASE,
-    	                                         USCI_B_SPI_TRANSMIT_INTERRUPT))
-    	    {
-    	        ;
-    	    }
-
-    	    //Transmit Data to slave
-    	    USCI_B_SPI_transmitData(USCI_B0_BASE, transmitData);
-    	    disable_SLAVE(&DIGI_POT);
-
-    	    __delay_cycles(10000);
-    	    __delay_cycles(10000);
-
+			// TIME DELAY
+			__delay_cycles(10000);
+			__delay_cycles(10000);
     	}
 
     	while(transmitData++ != high_value )
@@ -296,42 +280,42 @@ void sent_tx(SLAVE_SELECT *PARAM, uint8_t *tx_data)
 //This is the USCI_B0 interrupt vector service routine.
 //
 //******************************************************************************
-#if defined(__TI_COMPILER_VERSION__) || defined(__IAR_SYSTEMS_ICC__)
-#pragma vector=USCI_B0_VECTOR
-__interrupt
-#elif defined(__GNUC__)
-__attribute__((interrupt(USCI_B0_VECTOR)))
-#endif
-void USCI_B0_ISR(void)
-{
-    switch(__even_in_range(UCB0IV,4))
-    {
-    //Vector 2 - RXIFG
-    case 2:
-        //USCI_A0 TX buffer ready?
-        while(!USCI_B_SPI_getInterruptStatus(USCI_B0_BASE,
-                                             USCI_B_SPI_TRANSMIT_INTERRUPT))
-        {
-            ;
-        }
-
-        receiveData = USCI_B_SPI_receiveData(USCI_B0_BASE);
-
-        //Increment data
-        transmitData++;
-
-        //Send next value
-        USCI_B_SPI_transmitData(USCI_B0_BASE,
-                                transmitData
-                                );
-
-        //Delay between transmissions for slave to process information
-        __delay_cycles(40);
-
-        break;
-    default: break;
-    }
-}
+//#if defined(__TI_COMPILER_VERSION__) || defined(__IAR_SYSTEMS_ICC__)
+//#pragma vector=USCI_B0_VECTOR
+//__interrupt
+//#elif defined(__GNUC__)
+//__attribute__((interrupt(USCI_B0_VECTOR)))
+//#endif
+//void USCI_B0_ISR(void)
+//{
+//    switch(__even_in_range(UCB0IV,4))
+//    {
+//    //Vector 2 - RXIFG
+//    case 2:
+//        //USCI_A0 TX buffer ready?
+//        while(!USCI_B_SPI_getInterruptStatus(USCI_B0_BASE,
+//                                             USCI_B_SPI_TRANSMIT_INTERRUPT))
+//        {
+//            ;
+//        }
+//
+////        receiveData = USCI_B_SPI_receiveData(USCI_B0_BASE);
+//
+//        //Increment data
+////        transmitData++;
+//
+//        //Send next value
+////        USCI_B_SPI_transmitData(USCI_B0_BASE,
+////                                transmitData
+////                                );
+//
+//        //Delay between transmissions for slave to process information
+//        __delay_cycles(40);
+//
+//        break;
+//    default: break;
+//    }
+//}
 
 
 
