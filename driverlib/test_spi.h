@@ -244,9 +244,9 @@ void init_pot(void)
 
 while(transmitData++ != high_value )
 		{
-			enable_SLAVE(&DIGI_POT);
+//			enable_SLAVE(&DIGI_POT);
 			sent_tx(&DIGI_POT, transmitData);
-			disable_SLAVE(&DIGI_POT);
+//			disable_SLAVE(&DIGI_POT);
 
 			__delay_cycles(10000);
 			__delay_cycles(10000);
@@ -262,15 +262,20 @@ while(transmitData++ != high_value )
 
 void sent_tx(SLAVE_SELECT *PARAM, uint8_t *tx_data)
 {
-	//USCI_A0 TX buffer ready?
-				while(!USCI_B_SPI_getInterruptStatus(USCI_B0_BASE,
-													 USCI_B_SPI_TRANSMIT_INTERRUPT))
-				{
-					;
-				}
+	uint8_t POT_COMMAND = 0x11;// B00010001;
 
-				//Transmit Data to slave
-				USCI_B_SPI_transmitData(USCI_B0_BASE, 0x11);
+	// ENABLE SLAVE SELECT LINE
+	enable_SLAVE(PARAM);
+
+	//USCI_A0 TX buffer ready?
+	while(!USCI_B_SPI_getInterruptStatus(USCI_B0_BASE,
+										 USCI_B_SPI_TRANSMIT_INTERRUPT))
+	{
+		;
+	}
+
+	//Transmit Data to slave
+	USCI_B_SPI_transmitData(USCI_B0_BASE, POT_COMMAND);
 
 	//    	    	    USCI_A0 TX buffer ready?
 				while(!USCI_B_SPI_getInterruptStatus(USCI_B0_BASE,
@@ -281,6 +286,8 @@ void sent_tx(SLAVE_SELECT *PARAM, uint8_t *tx_data)
 
 				//Transmit Data to slave
 				USCI_B_SPI_transmitData(USCI_B0_BASE, tx_data);
+
+				disable_SLAVE(PARAM);
 }
 
 
