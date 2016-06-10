@@ -1,12 +1,12 @@
 /*
- * test_spi.h
+ * USCI_B0_SPI.h
  *
  *  Created on: Jun 5, 2016
  *      Author: Mario Osborn
  */
 
-#ifndef DRIVERLIB_TEST_SPI_H_
-#define DRIVERLIB_TEST_SPI_H_
+#ifndef DRIVERLIB_MSP430_LIB_USCI_B0_SPI_H_
+#define DRIVERLIB_MSP430_LIB_USCI_B0_SPI_H_
 
 //#include "driverlib.h"
 #include <gpio.h>
@@ -16,7 +16,7 @@
 //Specify desired frequency of SPI communication
 //
 //*****************************************************************************
-#define SPICLK                          500000
+#define DEFAULT_SPI_CLOCK_SPEED                          500000
 //uint8_t transmitData = 0x00, receiveData = 0x00;
 uint8_t returnValue = 0x00;
 
@@ -25,11 +25,11 @@ enum CS_ACTIVE_VALUE{
 	ACTIVE_HIGH
 };
 
-typedef struct SLAVE_SELECT{
+typedef struct SLAVE_SELECT_GPIO{
 	uint8_t PORT;
 	uint16_t PIN;
 	int SS_ACTIVE_VALUE;
-}SLAVE_SELECT;
+}SLAVE_SELECT_GPIO;
 
 // THIS MAY BE USED LATTER
 typedef struct TARGET_COMMANDS{
@@ -38,17 +38,17 @@ typedef struct TARGET_COMMANDS{
 	uint8_t SHUT_DOWN;
 }TARGET_COMMANDS;
 
-void set_SLAVE_HIGH(SLAVE_SELECT *PARAM);
-void set_SLAVE_LOW(SLAVE_SELECT *PARAM);
-void init_SLAVE(SLAVE_SELECT *PARAM);
-void init_SS_GPIO(SLAVE_SELECT *PARAM);
-void enable_SLAVE(SLAVE_SELECT *PARAM);
-void disable_SLAVE(SLAVE_SELECT *PARAM);
+void set_SLAVE_HIGH(SLAVE_SELECT_GPIO *PARAM);
+void set_SLAVE_LOW(SLAVE_SELECT_GPIO *PARAM);
+void init_SLAVE(SLAVE_SELECT_GPIO *PARAM);
+void init_SS_GPIO(SLAVE_SELECT_GPIO *PARAM);
+void enable_SLAVE(SLAVE_SELECT_GPIO *PARAM);
+void disable_SLAVE(SLAVE_SELECT_GPIO *PARAM);
 void init_SPI_B0(void);
 
-void sent_tx(SLAVE_SELECT *PARAM, uint8_t *tx_data);
+void sent_tx(SLAVE_SELECT_GPIO *PARAM, uint8_t *tx_data);
 
-void init_SS_GPIO(SLAVE_SELECT *PARAM)
+void init_SS_GPIO(SLAVE_SELECT_GPIO *PARAM)
 {
     //Set P1.1 for slave reset
     //Set P1.0 to output direction
@@ -59,7 +59,7 @@ void init_SS_GPIO(SLAVE_SELECT *PARAM)
 }
 
 
-void enable_SLAVE(SLAVE_SELECT *PARAM)
+void enable_SLAVE(SLAVE_SELECT_GPIO *PARAM)
 {
 
 	// IF SLAVE IS ACTIVE HIGH, BRING THE CHIP LOW - TO DISABLE
@@ -77,7 +77,7 @@ void enable_SLAVE(SLAVE_SELECT *PARAM)
 
 }
 
-void disable_SLAVE(SLAVE_SELECT *PARAM)
+void disable_SLAVE(SLAVE_SELECT_GPIO *PARAM)
 {
 	// IF SLAVE IS ACTIVE HIGH, BRING THE CHIP LOW - TO DISABLE
 	if(PARAM->SS_ACTIVE_VALUE == ACTIVE_HIGH)
@@ -94,7 +94,7 @@ void disable_SLAVE(SLAVE_SELECT *PARAM)
 
 }
 
-void set_SLAVE_HIGH(SLAVE_SELECT *PARAM)
+void set_SLAVE_HIGH(SLAVE_SELECT_GPIO *PARAM)
 {
 	//Set P1.1 for slave reset
 	    GPIO_setOutputHighOnPin(
@@ -103,7 +103,7 @@ void set_SLAVE_HIGH(SLAVE_SELECT *PARAM)
 	        );
 }
 
-void set_SLAVE_LOW(SLAVE_SELECT *PARAM)
+void set_SLAVE_LOW(SLAVE_SELECT_GPIO *PARAM)
 {
     //Now with SPI signals initialized, reset slave
     GPIO_setOutputLowOnPin(
@@ -124,7 +124,7 @@ void init_SPI_B0(void)
 	    USCI_B_SPI_initMasterParam param = {0};
 	    param.selectClockSource = USCI_B_SPI_CLOCKSOURCE_SMCLK;
 	    param.clockSourceFrequency = UCS_getSMCLK();
-	    param.desiredSpiClock = SPICLK;
+	    param.desiredSpiClock = DEFAULT_SPI_CLOCK_SPEED;
 	    param.msbFirst = USCI_B_SPI_MSB_FIRST;
 	    param.clockPhase = USCI_B_SPI_PHASE_DATA_CHANGED_ONFIRST_CAPTURED_ON_NEXT;
 	    param.clockPolarity = USCI_B_SPI_CLOCKPOLARITY_INACTIVITY_HIGH;
@@ -146,7 +146,7 @@ void init_SPI_B0(void)
 }
 
 
-void init_SLAVE(SLAVE_SELECT *PARAM)
+void init_SLAVE(SLAVE_SELECT_GPIO *PARAM)
 {
     // INITIALIZE GPIO
 	init_SS_GPIO(PARAM);
@@ -164,7 +164,7 @@ void init_SLAVE(SLAVE_SELECT *PARAM)
 }
 
 
-void sent_tx(SLAVE_SELECT *PARAM, uint8_t *tx_data)
+void sent_tx(SLAVE_SELECT_GPIO *PARAM, uint8_t *tx_data)
 {
 	uint8_t POT_COMMAND = 0x11;// B00010001;
 
@@ -194,4 +194,5 @@ void sent_tx(SLAVE_SELECT *PARAM, uint8_t *tx_data)
 	disable_SLAVE(PARAM);
 }
 
-#endif /* DRIVERLIB_TEST_SPI_H_ */
+
+#endif /* DRIVERLIB_MSP430_LIB_USCI_B0_SPI_H_ */

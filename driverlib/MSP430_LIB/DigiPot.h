@@ -8,7 +8,7 @@
 #ifndef DRIVERLIB_DIGIPOT_H_
 #define DRIVERLIB_DIGIPOT_H_
 
-#include <test_spi.h>
+#include <USCI_B0_SPI.h>
 
 #define potCommand = B00100001;         // command to shutdown pot
 
@@ -17,7 +17,7 @@ void POT_write_data(uint8_t m_write);
 void POT_shut_off();
 void POT_DEMO(void);
 
-SLAVE_SELECT DIGI_POT = {
+SLAVE_SELECT_GPIO DIGI_POT = {
 		GPIO_PORT_P1,
 		GPIO_PIN6,
 		ACTIVE_LOW
@@ -25,9 +25,7 @@ SLAVE_SELECT DIGI_POT = {
 
 void POT_write_data(uint8_t m_write)
 {
-
-	init_SLAVE(&DIGI_POT);
-
+	// Send Command to
 	sent_tx(&DIGI_POT, m_write);
 
 }
