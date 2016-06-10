@@ -8,7 +8,9 @@
 #ifndef DRIVERLIB_TEST_SPI_H_
 #define DRIVERLIB_TEST_SPI_H_
 
-#include "driverlib.h"
+//#include "driverlib.h"
+#include <gpio.h>
+#include <usci_b_spi.h>
 //*****************************************************************************
 //
 //Specify desired frequency of SPI communication
