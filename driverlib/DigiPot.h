@@ -34,31 +34,21 @@ void POT_write_data(uint8_t m_write)
 
 void POT_init(void)
 {
-//	// INITIALIZE SPI CHANNEL B0
-//	init_SPI_B0();
-//
-//	SLAVE_SELECT DIGI_POT = {
-//			DIGI_POT.PORT = GPIO_PORT_P1,
-//			DIGI_POT.PIN = GPIO_PIN6,
-//			DIGI_POT.SS_ACTIVE_VALUE = ACTIVE_LOW
-//	};
-//
-//    init_SLAVE(&DIGI_POT);
+	// Initiate the Slave Select Pin
+	init_SLAVE(&DIGI_POT);
 
+	// INITIALIZE SPI CHANNEL B0
+	init_SPI_B0();
 
 }
 
 void POT_DEMO(void)
 {
-//	POT_init();
-
-	// INITIALIZE SPI CHANNEL B0
-	init_SPI_B0();
-
-
+	POT_init();
 
 	//    uint8_t POT_COMMAND = 0x11;// B00010001;
 	uint8_t transmitData = 0x00;
+
 	//Initialize data values
 	uint8_t low_value = 0x10;
 	uint8_t high_value = 0x7F;
