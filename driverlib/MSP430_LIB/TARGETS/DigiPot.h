@@ -70,7 +70,7 @@ void POT_DEMO(void)
 		while(transmitData++ != high_value )
 		{
 			// TRANSMIT DATA
-//			sent_tx(&DIGI_POT, transmitData);
+			sent_tx(&DIGI_POT, transmitData);
 			POT_write_data(transmitData);
 
 			// TIME DELAY
