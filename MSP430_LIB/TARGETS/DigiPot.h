@@ -31,8 +31,10 @@ void POT_DEMO(void);
 
 void POT_write_data(uint8_t m_write)
 {
+
+//	send_COMMAND_AND_DATA()
 	// Send Command to
-	sent_tx(&DIGI_POT.SS_GPIO, m_write);
+	sent_tx(&DIGI_POT, m_write);
 
 }
 
