@@ -64,8 +64,7 @@ void enable_SLAVE(TARGET_DEVICE *TARGET);
 void disable_SLAVE(TARGET_DEVICE *TARGET);
 void init_SPI_B0(void);
 
-void sent_tx(TARGET_DEVICE *TARGET, uint8_t *tx_data);
-//void send_COMMAND_AND_DATA(TARGET_DEVICE *TARGET, uint8_t *COMMAND, uint8_t *TX_DATA);
+void send_COMMAND_AND_DATA(TARGET_DEVICE *TARGET, uint8_t *COMMAND, uint8_t *TX_DATA);
 
 void init_SS_GPIO(TARGET_DEVICE *TARGET)
 {
@@ -212,35 +211,6 @@ void send_COMMAND_AND_DATA(TARGET_DEVICE *TARGET, uint8_t *COMMAND, uint8_t *TX_
 	disable_SLAVE(TARGET);
 }
 
-void sent_tx(TARGET_DEVICE *TARGET , uint8_t *tx_data)
-{
-	uint8_t POT_COMMAND = TARGET->COMMANDS.WRITE;// B00010001;
-
-	// ENABLE SLAVE SELECT LINE
-	enable_SLAVE(TARGET);
-
-	//USCI_A0 TX buffer ready?
-	while(!USCI_B_SPI_getInterruptStatus(USCI_B0_BASE,
-			USCI_B_SPI_TRANSMIT_INTERRUPT))
-	{
-		;
-	}
-
-	//Transmit Data to slave
-	USCI_B_SPI_transmitData(USCI_B0_BASE, POT_COMMAND);
-
-	//USCI_A0 TX buffer ready?
-	while(!USCI_B_SPI_getInterruptStatus(USCI_B0_BASE,
-			USCI_B_SPI_TRANSMIT_INTERRUPT))
-	{
-		;
-	}
-
-	//Transmit Data to slave
-	USCI_B_SPI_transmitData(USCI_B0_BASE, tx_data);
-
-	disable_SLAVE(TARGET);
-}
 
 
 #endif /* DRIVERLIB_MSP430_LIB_USCI_B0_SPI_H_ */
