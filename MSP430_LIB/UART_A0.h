@@ -206,7 +206,7 @@ void UART_Enter(void)
 {
 	///////////////////////////////////////////////////////////////////
 	// Format buffer with string
-	sprintf( UART_buffer, "\n\r");
+	sprintf( UART_buffer, "\n\r\0");
 
 	// Send formatted buffer to UART
 	UARTSendArray(&UART_buffer, strlen(UART_buffer));

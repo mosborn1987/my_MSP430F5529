@@ -27,8 +27,8 @@ void UARTSendArray(unsigned char *TxArray, unsigned char ArrayLength);
 void UARTSendChar( unsigned char);
 void UART_Test( void );
 
-void Print_String(const char *my_Char);
-void Print_String_NL(const char *my_Char);
+void UART_TERMINAL_Print_String(const char *my_Char);
+void UART_TERMINAL_Print_String_NL(const char *my_Char);
 
 ////////////////////////////////////////////////////////////////////////
 // Configure clocks and hardware needed for the UART
@@ -177,7 +177,7 @@ void UART_Test(void)
 
 }
 
-void Print_String(const char *my_Char)
+void UART_TERMINAL_Print_String(const char *my_Char)
 {
 	///////////////////////////////////////////////////////////////////
 	// Format buffer with string
@@ -188,7 +188,7 @@ void Print_String(const char *my_Char)
 
 }
 
-void Print_String_NL(const char *my_Char)
+void UART_TERMINAL_Print_String_NL(const char *my_Char)
 {
 	///////////////////////////////////////////////////////////////////
 	// Format buffer with string

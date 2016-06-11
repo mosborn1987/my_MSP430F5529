@@ -17,11 +17,11 @@ void main(void)
     UART_init();
     while(1)
     {
-    	Print_String_NL("UART WORKING!");
-    	Print_String_NL("ENTER AS SINGLE CHAR");
+    	UART_TERMINAL_Print_String_NL("UART WORKING!");
+    	UART_TERMINAL_Print_String_NL("ENTER AS SINGLE CHAR");
 //    	System_Bell();
     	UART_get_array(UART_buffer, 1);
-    	Print_String("\n\r");
+    	UART_TERMINAL_Print_String("\n\r");
     }
 
 }
