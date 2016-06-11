@@ -182,35 +182,35 @@ void init_SLAVE(TARGET_DEVICE *TARGET)
 //    __bis_SR_register(LPM0_bits + GIE);
 }
 
-//void send_COMMAND_AND_DATA(TARGET_DEVICE *TARGET, uint8_t *COMMAND, uint8_t *TX_DATA);
-//{
-////	uint8_t POT_COMMAND = TARGET->COMMANDS.WRITE;// B00010001;
-//
-//	// ENABLE SLAVE SELECT LINE
-//	enable_SLAVE(TARGET);
-//
-//	//USCI_A0 TX buffer ready?
-//	while(!USCI_B_SPI_getInterruptStatus(USCI_B0_BASE,
-//			USCI_B_SPI_TRANSMIT_INTERRUPT))
-//	{
-//		;
-//	}
-//
-//	//Transmit Command to Slave
-//	USCI_B_SPI_transmitData(USCI_B0_BASE, COMMAND);
-//
-//	//USCI_A0 TX buffer ready?
-//	while(!USCI_B_SPI_getInterruptStatus(USCI_B0_BASE,
-//			USCI_B_SPI_TRANSMIT_INTERRUPT))
-//	{
-//		;
-//	}
-//
-//	//Transmit Data to Slave
-//	USCI_B_SPI_transmitData(USCI_B0_BASE, tx_data);
-//
-//	disable_SLAVE(TARGET);
-//}
+void send_COMMAND_AND_DATA(TARGET_DEVICE *TARGET, uint8_t *COMMAND, uint8_t *TX_DATA)
+{
+//	uint8_t POT_COMMAND = TARGET->COMMANDS.WRITE;// B00010001;
+
+	// ENABLE SLAVE SELECT LINE
+	enable_SLAVE(TARGET);
+
+	//USCI_A0 TX buffer ready?
+	while(!USCI_B_SPI_getInterruptStatus(USCI_B0_BASE,
+			USCI_B_SPI_TRANSMIT_INTERRUPT))
+	{
+		;
+	}
+
+	//Transmit Command to Slave
+	USCI_B_SPI_transmitData(USCI_B0_BASE, COMMAND);
+
+	//USCI_A0 TX buffer ready?
+	while(!USCI_B_SPI_getInterruptStatus(USCI_B0_BASE,
+			USCI_B_SPI_TRANSMIT_INTERRUPT))
+	{
+		;
+	}
+
+	//Transmit Data to Slave
+	USCI_B_SPI_transmitData(USCI_B0_BASE, TX_DATA);
+
+	disable_SLAVE(TARGET);
+}
 
 void sent_tx(TARGET_DEVICE *TARGET , uint8_t *tx_data)
 {
