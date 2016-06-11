@@ -32,96 +32,110 @@ typedef struct SLAVE_SELECT_GPIO{
 }SLAVE_SELECT_GPIO;
 
 // THIS MAY BE USED LATTER
-typedef struct TARGET_COMMANDS{
-	uint8_t WRITE;
+typedef struct BASIC_TARGET_COMMANDS{
 	uint8_t READ;
+	uint8_t WRITE;
 	uint8_t SHUT_DOWN;
-}TARGET_COMMANDS;
+}BASIC_TARGET_COMMANDS;
 
 typedef struct TARGET_ATTRIBUTES{
-	uint8_t DATA_SIZE;
-	uint8_t MAX_BUAD_RATE;
+	uint8_t DATA_SIZE_IN_BYTES;
+	long MAX_BUAD_RATE;
 	uint8_t RESET_TIME;
 }TARGET_ATTRIBUTES;
 
-typedef struct TARGET_DEVICE{
-	SLAVE_SELECT_GPIO SS_GPIO;
-	TARGET_COMMANDS COMMANDS;
-	TARGET_ATTRIBUTES ATTRIBUTES;
-
+enum SPI_B_PORT_SELECT{
+	SPI_B0,
+	SPI_B1
 };
 
-void set_SLAVE_HIGH(SLAVE_SELECT_GPIO *PARAM);
-void set_SLAVE_LOW(SLAVE_SELECT_GPIO *PARAM);
-void init_SLAVE(SLAVE_SELECT_GPIO *PARAM);
-void init_SS_GPIO(SLAVE_SELECT_GPIO *PARAM);
-void enable_SLAVE(SLAVE_SELECT_GPIO *PARAM);
-void disable_SLAVE(SLAVE_SELECT_GPIO *PARAM);
+typedef struct TARGET_DEVICE{
+	SLAVE_SELECT_GPIO SS_GPIO;
+	BASIC_TARGET_COMMANDS COMMANDS;
+	TARGET_ATTRIBUTES ATTRIBUTES;
+	uint8_t SPI_B_PORT;
+}TARGET_DEVICE;
+
+void set_SLAVE_HIGH(TARGET_DEVICE *TARGET);
+void set_SLAVE_LOW(TARGET_DEVICE *TARGET);
+void init_SLAVE(TARGET_DEVICE *TARGET);
+void init_SS_GPIO(TARGET_DEVICE *TARGET);
+void enable_SLAVE(TARGET_DEVICE *TARGET);
+void disable_SLAVE(TARGET_DEVICE *TARGET);
 void init_SPI_B0(void);
 
-void sent_tx(SLAVE_SELECT_GPIO *PARAM, uint8_t *tx_data);
+void sent_tx(TARGET_DEVICE *TARGET, uint8_t *tx_data);
 
-void init_SS_GPIO(SLAVE_SELECT_GPIO *PARAM)
+void init_SS_GPIO(TARGET_DEVICE *TARGET)
 {
     //Set P1.1 for slave reset
     //Set P1.0 to output direction
     GPIO_setAsOutputPin(
-        PARAM->PORT,
-        PARAM->PIN
+    		TARGET->SS_GPIO.PORT,
+			TARGET->SS_GPIO.PIN
+//			PARAM->PORT,
+//			PARAM->PIN
         );
 }
 
 
-void enable_SLAVE(SLAVE_SELECT_GPIO *PARAM)
+void enable_SLAVE(TARGET_DEVICE *TARGET)
 {
 
 	// IF SLAVE IS ACTIVE HIGH, BRING THE CHIP LOW - TO DISABLE
-	if(PARAM->SS_ACTIVE_VALUE == ACTIVE_HIGH)
+	if(TARGET->SS_GPIO.SS_ACTIVE_VALUE == ACTIVE_HIGH)
 	{
-		set_SLAVE_HIGH(PARAM);
+		set_SLAVE_HIGH(TARGET);
 	}
 
 	// ELSE IF THE SLAVE IS ACTIVE LOW, BRING THE CHIP HIGH - TO DISABLE
-	if(PARAM->SS_ACTIVE_VALUE == ACTIVE_LOW)
+	if(TARGET->SS_GPIO.SS_ACTIVE_VALUE == ACTIVE_LOW)
 	{
-		set_SLAVE_LOW(PARAM);
+		set_SLAVE_LOW(TARGET);
 	}
 	return;
 
 }
 
-void disable_SLAVE(SLAVE_SELECT_GPIO *PARAM)
+void disable_SLAVE(TARGET_DEVICE *TARGET)
 {
 	// IF SLAVE IS ACTIVE HIGH, BRING THE CHIP LOW - TO DISABLE
-	if(PARAM->SS_ACTIVE_VALUE == ACTIVE_HIGH)
+	if(TARGET->SS_GPIO.SS_ACTIVE_VALUE == ACTIVE_HIGH)
 	{
-		set_SLAVE_LOW(PARAM);
+		set_SLAVE_LOW(TARGET);
 	}
 
 	// ELSE IF THE SLAVE IS ACTIVE LOW, BRING THE CHIP HIGH - TO DISABLE
-	if(PARAM->SS_ACTIVE_VALUE == ACTIVE_LOW)
+	if(TARGET->SS_GPIO.SS_ACTIVE_VALUE == ACTIVE_LOW)
 	{
-		set_SLAVE_HIGH(PARAM);
+		set_SLAVE_HIGH(TARGET);
 	}
 	return;
 
 }
 
-void set_SLAVE_HIGH(SLAVE_SELECT_GPIO *PARAM)
+void set_SLAVE_HIGH(TARGET_DEVICE *TARGET)
 {
 	//Set P1.1 for slave reset
-	    GPIO_setOutputHighOnPin(
-			PARAM->PORT,
-			PARAM->PIN
+	GPIO_setOutputHighOnPin(
+			TARGET->SS_GPIO.PORT,
+			TARGET->SS_GPIO.PIN
+//		TARGET->SS_GPIO->PORT,
+//		TARGET->SS_GPIO->PIN
+
+//		PARAM->PORT,
+//		PARAM->PIN
 	        );
 }
 
-void set_SLAVE_LOW(SLAVE_SELECT_GPIO *PARAM)
+void set_SLAVE_LOW(TARGET_DEVICE *TARGET)
 {
     //Now with SPI signals initialized, reset slave
-    GPIO_setOutputLowOnPin(
-        PARAM->PORT,
-        PARAM->PIN
+	GPIO_setOutputLowOnPin(
+		TARGET->SS_GPIO.PORT,
+		TARGET->SS_GPIO.PIN
+//      PARAM->PORT,
+//      PARAM->PIN
         );
 }
 
@@ -159,14 +173,14 @@ void init_SPI_B0(void)
 }
 
 
-void init_SLAVE(SLAVE_SELECT_GPIO *PARAM)
+void init_SLAVE(TARGET_DEVICE *TARGET)
 {
     // INITIALIZE GPIO
-	init_SS_GPIO(PARAM);
+	init_SS_GPIO(TARGET);
 
 	// RESET SLAVE SELECT
-	disable_SLAVE(PARAM);
-    enable_SLAVE(PARAM);
+	disable_SLAVE(TARGET);
+    enable_SLAVE(TARGET);
 
     //Wait for slave to initialize
     __delay_cycles(100);
@@ -177,12 +191,12 @@ void init_SLAVE(SLAVE_SELECT_GPIO *PARAM)
 }
 
 
-void sent_tx(SLAVE_SELECT_GPIO *PARAM, uint8_t *tx_data)
+void sent_tx(TARGET_DEVICE *TARGET , uint8_t *tx_data)
 {
-	uint8_t POT_COMMAND = 0x11;// B00010001;
+	uint8_t POT_COMMAND = TARGET->COMMANDS.WRITE;// B00010001;
 
 	// ENABLE SLAVE SELECT LINE
-	enable_SLAVE(PARAM);
+	enable_SLAVE(TARGET);
 
 	//USCI_A0 TX buffer ready?
 	while(!USCI_B_SPI_getInterruptStatus(USCI_B0_BASE,
@@ -204,7 +218,7 @@ void sent_tx(SLAVE_SELECT_GPIO *PARAM, uint8_t *tx_data)
 	//Transmit Data to slave
 	USCI_B_SPI_transmitData(USCI_B0_BASE, tx_data);
 
-	disable_SLAVE(PARAM);
+	disable_SLAVE(TARGET);
 }
 
 
