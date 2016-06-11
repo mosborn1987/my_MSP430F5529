@@ -73,8 +73,6 @@ void init_SS_GPIO(TARGET_DEVICE *TARGET)
     GPIO_setAsOutputPin(
     		TARGET->SS_GPIO.PORT,
 			TARGET->SS_GPIO.PIN
-//			PARAM->PORT,
-//			PARAM->PIN
         );
 }
 
@@ -120,11 +118,6 @@ void set_SLAVE_HIGH(TARGET_DEVICE *TARGET)
 	GPIO_setOutputHighOnPin(
 			TARGET->SS_GPIO.PORT,
 			TARGET->SS_GPIO.PIN
-//		TARGET->SS_GPIO->PORT,
-//		TARGET->SS_GPIO->PIN
-
-//		PARAM->PORT,
-//		PARAM->PIN
 	        );
 }
 
@@ -134,8 +127,6 @@ void set_SLAVE_LOW(TARGET_DEVICE *TARGET)
 	GPIO_setOutputLowOnPin(
 		TARGET->SS_GPIO.PORT,
 		TARGET->SS_GPIO.PIN
-//      PARAM->PORT,
-//      PARAM->PIN
         );
 }
 
