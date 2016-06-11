@@ -25,16 +25,20 @@ TARGET_DEVICE DIGI_POT = {
 };
 
 void POT_init(void);
-void POT_write_data(uint8_t m_write);
+void POT_execute_command(uint8_t m_command, uint8_t m_write);
+void POT_set_resistance(uint8_t m_resistance);
 void POT_shut_off();
 void POT_DEMO(void);
 
-void POT_write_data(uint8_t m_write)
+void POT_execute_command(uint8_t m_command, uint8_t m_write)
 {
+	// Send the command than data to the POT
+	send_COMMAND_AND_DATA(&DIGI_POT, m_command, m_write);
+}
 
-//	send_COMMAND_AND_DATA()
-	// Send Command to
-	sent_tx(&DIGI_POT, m_write);
+void POT_set_resistance(uint8_t m_resistance)
+{
+	send_COMMAND_AND_DATA(&DIGI_POT, COMMAND_DIGI_POT_WRITE, m_resistance);
 
 }
 
@@ -67,7 +71,8 @@ void POT_DEMO(void)
 		while(transmitData--!=low_value)
 		{
 			// TRANSMIT DATA
-			POT_write_data(transmitData);
+			POT_set_resistance(transmitData);
+//			POT_execute_command(COMMAND_DIGI_POT_WRITE, transmitData);
 
 			// TIME DELAY
 			__delay_cycles(10000);
@@ -77,8 +82,9 @@ void POT_DEMO(void)
 		while(transmitData++ != high_value )
 		{
 			// TRANSMIT DATA
-			sent_tx(&DIGI_POT, transmitData);
-			POT_write_data(transmitData);
+//			sent_tx(&DIGI_POT, transmitData);
+			POT_set_resistance(transmitData);
+//			POT_execute_command(COMMAND_DIGI_POT_WRITE, transmitData);
 
 			// TIME DELAY
 			__delay_cycles(10000);
