@@ -23,6 +23,11 @@ SLAVE_SELECT_GPIO DIGI_POT = {
 		ACTIVE_LOW
 };
 
+
+
+
+
+
 void POT_write_data(uint8_t m_write)
 {
 	// Send Command to
