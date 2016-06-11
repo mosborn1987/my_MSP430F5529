@@ -6,6 +6,7 @@
 //#include <Nokia_Test.h>
 #include <ESP8266.h>
 #include <UART.h>
+//#include <UART_A0.h>
 
 
 
@@ -16,9 +17,12 @@ void main(void)
     UART_init();
     while(1)
     {
-    	Print_String_NL("UART IS WORKING!");
+    	Print_String_NL("UART WORKING!");
+    	Print_String_NL("ENTER AS SINGLE CHAR");
+//    	System_Bell();
+    	UART_get_array(UART_buffer, 1);
+    	Print_String("\n\r");
     }
-
 
 }
 

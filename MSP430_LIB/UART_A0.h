@@ -1,14 +1,12 @@
 /*
- * UART.h
+ * UART_A0.h
  *
- *  Created on: Sep 1, 2015
+ *  Created on: Jun 11, 2016
  *      Author: Mario Osborn
- *
- *      Note: Example included at the bottom
  */
 
-#ifndef MSP430_LIB_UART_H_
-#define MSP430_LIB_UART_H_
+#ifndef MSP430_LIB_UART_A0_H_
+#define MSP430_LIB_UART_A0_H_
 
 // Contains 'sprintf'
 #include <stdio.h>
@@ -36,16 +34,18 @@ void UART_init(void)
 {
 	////////////////////////////////////////////////////////////////////
 	//
-	P4SEL = BIT5+BIT4; // P4.4, P4.5 = USCI_A0 TXD/RXD
-	UCA1CTL1 |= UCSWRST; // **Put state machine in reset**
-	UCA1CTL1 |= UCSSEL_2; // SMCLK
-	UCA1BR0 = 6; // 1MHz 9600 (see User's Guide)
-	UCA1BR1 = 0; // 1MHz 9600
-	UCA1MCTL = UCBRS_0 + UCBRF_13 + UCOS16; // Modln UCBRSx=0, UCBRFx=0,
+
+//	P4SEL = BIT5+BIT4; // P4.4, P4.5 = USCI_A0 TXD/RXD
+	P3SEL = BIT3 +BIT4;
+	UCA0CTL1 |= UCSWRST; // **Put state machine in reset**
+	UCA0CTL1 |= UCSSEL_2; // SMCLK
+	UCA0BR0 = 6; // 1MHz 9600 (see User's Guide)
+	UCA0BR1 = 0; // 1MHz 9600
+	UCA0MCTL = UCBRS_0 + UCBRF_13 + UCOS16; // Modln UCBRSx=0, UCBRFx=0,
 
 	// over sampling
-	UCA1CTL1 &= ~UCSWRST; // **Initialize USCI state machine**
-	UCA1IE |= UCRXIE; // Enable USCI_A1 RX interrupt
+	UCA0CTL1 &= ~UCSWRST; // **Initialize USCI state machine**
+	UCA0IE |= UCRXIE; // Enable USCI_A1 RX interrupt
 
 	return;
 }
@@ -128,11 +128,11 @@ void UARTSendArray(unsigned char *TxArray, unsigned char ArrayLength)
 	{
 		////////////////////////////////////////////////////////////////
 		// Waits until the TX buffer is ready to recieve new data
-		while (!(UCA1IFG&UCTXIFG)); // USCI_A0 TX buffer ready?
+		while (!(UCA0IFG&UCTXIFG)); // USCI_A0 TX buffer ready?
 
 		////////////////////////////////////////////////////////////////
 		// Write the character at the location specified py the pointer
-		UCA1TXBUF = *TxArray;
+		UCA0TXBUF = *TxArray;
 
 		////////////////////////////////////////////////////////////////
 		// Increment the TxArray pointer to point to the next character
@@ -206,7 +206,7 @@ void UART_Enter(void)
 {
 	///////////////////////////////////////////////////////////////////
 	// Format buffer with string
-	sprintf( UART_buffer, "\n\r\0");
+	sprintf( UART_buffer, "\n\r");
 
 	// Send formatted buffer to UART
 	UARTSendArray(&UART_buffer, strlen(UART_buffer));
@@ -246,5 +246,4 @@ void UART_LESS(void)
 }
 
 
-
-#endif /* MSP430_LIB_UART_H_ */
+#endif /* MSP430_LIB_UART_A0_H_ */
