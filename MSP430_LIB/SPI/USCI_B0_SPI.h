@@ -65,6 +65,7 @@ void disable_SLAVE(TARGET_DEVICE *TARGET);
 void init_SPI_B0(void);
 
 void sent_tx(TARGET_DEVICE *TARGET, uint8_t *tx_data);
+//void send_COMMAND_AND_DATA(TARGET_DEVICE *TARGET, uint8_t *COMMAND, uint8_t *TX_DATA);
 
 void init_SS_GPIO(TARGET_DEVICE *TARGET)
 {
@@ -139,16 +140,16 @@ void init_SPI_B0(void)
 	        );
 
 	    //Initialize Master
-	    USCI_B_SPI_initMasterParam param = {0};
-	    param.selectClockSource = USCI_B_SPI_CLOCKSOURCE_SMCLK;
-	    param.clockSourceFrequency = UCS_getSMCLK();
-	    param.desiredSpiClock = DEFAULT_SPI_CLOCK_SPEED;
-	    param.msbFirst = USCI_B_SPI_MSB_FIRST;
-	    param.clockPhase = USCI_B_SPI_PHASE_DATA_CHANGED_ONFIRST_CAPTURED_ON_NEXT;
-	    param.clockPolarity = USCI_B_SPI_CLOCKPOLARITY_INACTIVITY_HIGH;
-	    returnValue = USCI_B_SPI_initMaster(USCI_B0_BASE, &param);
+	    USCI_B_SPI_initMasterParam SPI_B_PARAM = {0};
+	    SPI_B_PARAM.selectClockSource = USCI_B_SPI_CLOCKSOURCE_SMCLK;
+	    SPI_B_PARAM.clockSourceFrequency = UCS_getSMCLK();
+	    SPI_B_PARAM.desiredSpiClock = DEFAULT_SPI_CLOCK_SPEED;
+	    SPI_B_PARAM.msbFirst = USCI_B_SPI_MSB_FIRST;
+	    SPI_B_PARAM.clockPhase = USCI_B_SPI_PHASE_DATA_CHANGED_ONFIRST_CAPTURED_ON_NEXT;
+	    SPI_B_PARAM.clockPolarity = USCI_B_SPI_CLOCKPOLARITY_INACTIVITY_HIGH;
 
-	    if(STATUS_FAIL == returnValue)
+	    // Checks the success of the initiation of B0
+	    if(STATUS_FAIL == USCI_B_SPI_initMaster(USCI_B0_BASE, &SPI_B_PARAM))
 	    {
 	        return;
 	    }
@@ -171,7 +172,7 @@ void init_SLAVE(TARGET_DEVICE *TARGET)
 
 	// RESET SLAVE SELECT
 	disable_SLAVE(TARGET);
-    enable_SLAVE(TARGET);
+//    enable_SLAVE(TARGET);
 
     //Wait for slave to initialize
     __delay_cycles(100);
@@ -181,6 +182,35 @@ void init_SLAVE(TARGET_DEVICE *TARGET)
 //    __bis_SR_register(LPM0_bits + GIE);
 }
 
+//void send_COMMAND_AND_DATA(TARGET_DEVICE *TARGET, uint8_t *COMMAND, uint8_t *TX_DATA);
+//{
+////	uint8_t POT_COMMAND = TARGET->COMMANDS.WRITE;// B00010001;
+//
+//	// ENABLE SLAVE SELECT LINE
+//	enable_SLAVE(TARGET);
+//
+//	//USCI_A0 TX buffer ready?
+//	while(!USCI_B_SPI_getInterruptStatus(USCI_B0_BASE,
+//			USCI_B_SPI_TRANSMIT_INTERRUPT))
+//	{
+//		;
+//	}
+//
+//	//Transmit Command to Slave
+//	USCI_B_SPI_transmitData(USCI_B0_BASE, COMMAND);
+//
+//	//USCI_A0 TX buffer ready?
+//	while(!USCI_B_SPI_getInterruptStatus(USCI_B0_BASE,
+//			USCI_B_SPI_TRANSMIT_INTERRUPT))
+//	{
+//		;
+//	}
+//
+//	//Transmit Data to Slave
+//	USCI_B_SPI_transmitData(USCI_B0_BASE, tx_data);
+//
+//	disable_SLAVE(TARGET);
+//}
 
 void sent_tx(TARGET_DEVICE *TARGET , uint8_t *tx_data)
 {

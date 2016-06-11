@@ -11,11 +11,11 @@ void main(void)
     //Stop watchdog timer
     WDT_A_hold(WDT_A_BASE);
 
-    POT_init();
-    POT_write_data(0x35);
-//    POT_DEMO();
-    init_Nokia_5110();
-    infinite_LCD();
+//    POT_init();
+//    POT_write_data(0x35);
+    POT_DEMO();
+//    init_Nokia_5110();
+//    infinite_LCD();
 
 
 
