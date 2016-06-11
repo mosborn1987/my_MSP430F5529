@@ -15,24 +15,6 @@
 #define COMMAND_DIGI_POT_READ       0x00
 #define COMMAND_DIGI_POT_WRITE      0x11
 #define COMMAND_DIGI_POT_SHUT_DOWN  0x21
-//
-//SLAVE_SELECT_GPIO SS_GPIO_DIGI_POT = {
-//		GPIO_PORT_P1,
-//		GPIO_PIN6,
-//		ACTIVE_LOW
-//};
-//
-//BASIC_TARGET_COMMANDS DP_BASIC_COMMANDS = {
-//		COMMAND_DIGI_POT_READ,
-//		COMMAND_DIGI_POT_WRITE,
-//		COMMAND_DIGI_POT_SHUT_DOWN
-//};
-//
-//TARGET_ATTRIBUTES DP_ATTRIBUTES = {
-//		DIGI_POT_DATA_BYTE_SIZE,
-//		DIGI_POT_MAX_BAUD_RATE,
-//		10
-//};
 
 TARGET_DEVICE DIGI_POT = {
 		{ GPIO_PORT_P1, GPIO_PIN6, ACTIVE_LOW},
@@ -40,15 +22,6 @@ TARGET_DEVICE DIGI_POT = {
 		{DIGI_POT_DATA_BYTE_SIZE, DIGI_POT_MAX_BAUD_RATE, 10},
 		SPI_B0
 
-//		&SS_GPIO_DIGI_POT,
-//		&DP_BASIC_COMMANDS,
-//		&DP_ATTRIBUTES,
-//		SPI_B0
-
-//		{SS_GPIO_DIGI_POT->PORT, SS_GPIO_DIGI_POT->PIN, SS_GPIO_DIGI_POT->SS_ACTIVE_VALUE},
-//		{DP_BASIC_COMMANDS->READ, DP_BASIC_COMMANDS->WRITE, DP_BASIC_COMMANDS->SHUT_DOWN},
-//		{DP_ATTRIBUTES->DATA_SIZE_IN_BYTES, DP_ATTRIBUTES->MAX_BUAD_RATE, DP_ATTRIBUTES->RESET_TIME},
-//		SPI_B0
 };
 
 void POT_init(void);
@@ -56,19 +29,10 @@ void POT_write_data(uint8_t m_write);
 void POT_shut_off();
 void POT_DEMO(void);
 
-
-
-
-
-
-
-
 void POT_write_data(uint8_t m_write)
 {
 	// Send Command to
 	sent_tx(&DIGI_POT.SS_GPIO, m_write);
-//			DIGI_POT.SS_GPIO
-//			SS_GPIO_DIGI_POT, m_write);
 
 }
 
@@ -101,7 +65,6 @@ void POT_DEMO(void)
 		while(transmitData--!=low_value)
 		{
 			// TRANSMIT DATA
-//			sent_tx(&DIGI_POT, transmitData);
 			POT_write_data(transmitData);
 
 			// TIME DELAY
