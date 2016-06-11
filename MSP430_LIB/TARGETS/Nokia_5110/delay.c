@@ -15,7 +15,10 @@
  */
 void delay_ms(unsigned int ms) {
 	while (ms--) {
-		__delay_cycles(1000);
+		__delay_cycles(10000);
+		__delay_cycles(10000);
+		__delay_cycles(10000);
+		__delay_cycles(10000);
 	}
 }
 

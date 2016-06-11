@@ -63,7 +63,7 @@ void infinite_LCD(void)
 		lcd_print("m");
 //		_LP_time_delay_ms(times);
 
-		lcd_print("TEST");
+//		lcd_print("TEST");
 
 		int i = 0;
 		for(i = 0; i < 5; i++)

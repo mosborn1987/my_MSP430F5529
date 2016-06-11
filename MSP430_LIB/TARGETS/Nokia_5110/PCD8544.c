@@ -16,9 +16,9 @@
 
 // Pins.
 #define SCLK BIT0
-#define MOSI BIT1
-#define D_C  BIT2
-#define EN   BIT3
+#define MOSI BIT2
+#define D_C  BIT4
+#define EN   BIT5
 
 // Properties.
 #define LCDWIDTH  84
@@ -36,8 +36,8 @@ void lcd_setup() {
 	P2OUT |= EN;
 
 	// Reset pin
-	P1DIR |= BIT1;
-	P1OUT |= BIT1;
+	P1DIR |= BIT2;
+	P1OUT |= BIT2;
 
 }
 
