@@ -8,8 +8,8 @@
 #ifndef DRIVERLIB_MSP430_LIB_MSP430_LIB_H_
 #define DRIVERLIB_MSP430_LIB_MSP430_LIB_H_
 
-#include <UART.h>
 #include <ADC12.h>
+#include "UART_TERMINAL_A1.h"
 
 
 
