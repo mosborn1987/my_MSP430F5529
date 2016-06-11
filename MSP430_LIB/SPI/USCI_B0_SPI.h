@@ -41,7 +41,7 @@ typedef struct BASIC_TARGET_COMMANDS{
 typedef struct TARGET_ATTRIBUTES{
 	uint8_t DATA_SIZE_IN_BYTES;
 	long MAX_BUAD_RATE;
-	uint8_t RESET_TIME;
+	uint8_t RESET_TIME_mS;
 }TARGET_ATTRIBUTES;
 
 enum SPI_B_PORT_SELECT{

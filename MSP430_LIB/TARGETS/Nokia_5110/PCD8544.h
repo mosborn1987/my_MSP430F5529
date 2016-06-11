@@ -8,6 +8,8 @@
 #ifndef PCD8544_H_
 #define PCD8544_H_
 
+#include <Nokia_Test.h>
+
 // Function Set bits (PD, V, H).
 #define PCD8544_POWERDOWN       0b00000100
 #define PCD8544_ENTRYMODE_V     0b00000010
