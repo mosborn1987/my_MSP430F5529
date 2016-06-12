@@ -12,10 +12,6 @@
 #include <stdio.h>
 #include <ISR_UART.h>
 
-///////////////////////////////////////////////////////////////////
-// Declare buffer size and data type
-unsigned char UART_buffer[100];
-
 ////////////////////////////////////////////////////////////////////////
 // Function Declaration - Each Function prototype is defined later
 void UART_init(void);

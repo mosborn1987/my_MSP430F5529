@@ -12,6 +12,7 @@
 ////////////////////////////////////////////////////////////////////////
 // Variable declaration
 static volatile char data;
+unsigned char UART_buffer[100];
 
 
 // Echo back RXed character, confirm TX buffer is ready first
@@ -32,9 +33,11 @@ void __attribute__ ((interrupt(USCI_A0_VECTOR))) USCI_A0_ISR (void)
 		// Vector 2 - RXIFG
 		case 2:
 		{
-			// USCI_A0 TX buffer ready?
+			// USCI_A1 TX buffer ready?
 			while (!(UCA1IFG&UCTXIFG));
-			UCA0TXBUF = UCA0RXBUF; // TX -> RXed character
+
+			// RX_A0 -> TX_A1 - UART Terminal
+			UCA1TXBUF = UCA0RXBUF; // TX -> RXed character
 			data = UCA0RXBUF;
 			break;
 		}
