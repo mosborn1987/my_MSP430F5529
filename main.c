@@ -17,8 +17,6 @@ void main(void)
     UART_TERMINAL_init();
     UART_TERMINAL_Print_String_NL("UART WORKING!");
 
-    setup();
-
     while(1)
     {
 
