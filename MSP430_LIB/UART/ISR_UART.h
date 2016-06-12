@@ -17,14 +17,16 @@ static volatile char data;
 unsigned char UART_buffer[100];
 static volatile uint8_t buffer_index = 0;
 
-
+// Define Function Prototypes
 void copy_UART_buffer(char *dest_array);
 uint8_t UART_DATA_AVALIABLE(void);
 void reset_UART_buffer_index(void);
 
+// Functions
 void copy_UART_buffer(char *dest_array)
 {
 	strncpy(dest_array, UART_buffer, buffer_index);
+	dest_array[buffer_index+1] = '\0';
 	reset_UART_buffer_index();
 	return 0;
 }
@@ -39,6 +41,7 @@ void reset_UART_buffer_index(void)
 	buffer_index = 0;
 	return;
 }
+
 // Echo back RXed character, confirm TX buffer is ready first
 #if defined(__TI_COMPILER_VERSION__) || defined(__IAR_SYSTEMS_ICC__)
 #pragma vector=USCI_A0_VECTOR
