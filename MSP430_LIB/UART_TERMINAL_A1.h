@@ -30,6 +30,8 @@ void UART_TERMINAL_Test( void );
 
 void UART_TERMINAL_Print_String(const char *my_Char);
 void UART_TERMINAL_Print_String_NL(const char *my_Char);
+void UART_TERMINAL_Enter(void);
+void UART_TERMINAL_System_Bell(void);
 
 ////////////////////////////////////////////////////////////////////////
 // Configure clocks and hardware needed for the UART
@@ -199,11 +201,11 @@ void UART_TERMINAL_Print_String_NL(const char *my_Char)
 	UART_TERMINAL_SendArray(&UART_buffer, strlen(UART_buffer));
 
 	// Add a '\n\r' to the end of a line
-	UART_Enter();
+	UART_TERMINAL_Enter();
 
 }
 
-void UART_Enter(void)
+void UART_TERMINAL_Enter(void)
 {
 	///////////////////////////////////////////////////////////////////
 	// Format buffer with string
@@ -215,7 +217,7 @@ void UART_Enter(void)
 
 #define bell_sound 7
 
-void System_Bell(void)
+void UART_TERMINAL_System_Bell(void)
 {
 	UART_TERMINAL_SendChar(bell_sound);
 }
