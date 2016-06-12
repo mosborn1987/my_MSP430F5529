@@ -9,10 +9,19 @@
 #define DRIVERLIB_ISR_UART_H_
 
 //#include <UART.h>
+#include <stdint.h>
 ////////////////////////////////////////////////////////////////////////
 // Variable declaration
 static volatile char data;
 unsigned char UART_buffer[100];
+static volatile uint8_t buffer_index = 0;
+
+void reset_UART_buffer_index(void);
+void reset_UART_buffer_index(void)
+{
+	buffer_index = 0;
+	return;
+}
 
 
 // Echo back RXed character, confirm TX buffer is ready first
@@ -36,9 +45,11 @@ void __attribute__ ((interrupt(USCI_A0_VECTOR))) USCI_A0_ISR (void)
 			// USCI_A1 TX buffer ready?
 			while (!(UCA1IFG&UCTXIFG));
 
-			// RX_A0 -> TX_A1 - UART Terminal
+			// Echo to UART TERMINAL
 			UCA1TXBUF = UCA0RXBUF; // TX -> RXed character
-			data = UCA0RXBUF;
+
+			// Store data in buffer
+			UART_buffer[buffer_index++] = UCA0RXBUF;
 			break;
 		}
 
