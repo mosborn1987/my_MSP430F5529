@@ -15,7 +15,7 @@ void main(void)
     //Stop watchdog timer
     WDT_A_hold(WDT_A_BASE);
     UART_TERMINAL_init();
-    UART_TERMINAL_Print_String_NL("UART WORKING!");
+
 
     while(1)
     {

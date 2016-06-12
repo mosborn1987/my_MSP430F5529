@@ -50,6 +50,8 @@ void UART_TERMINAL_init(void)
 	UCA1CTL1 &= ~UCSWRST; // **Initialize USCI state machine**
 	UCA1IE |= UCRXIE; // Enable USCI_A1 RX interrupt
 
+    UART_TERMINAL_Print_String_NL("The UART Terminal has been initialized:");
+
 	return;
 }
 
