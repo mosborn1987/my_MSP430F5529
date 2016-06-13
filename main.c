@@ -15,11 +15,8 @@ void main(void)
     //Stop watchdog timer
     WDT_A_hold(WDT_A_BASE);
 
-    // Init A0
-    UART_init();
-
-    // Init A1
-    UART_TERMINAL_init();
+    // This also sets up UART A0 and A1
+    ESP8266_setup();
 
     while(1)
     {

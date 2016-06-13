@@ -50,7 +50,7 @@ void delay(uint8_t delay_cycles)
 {
 	while(delay_cycles>0)
 	{
-		_delay_cycles(1000);
+		_delay_cycles(1);
 		delay_cycles--;
 	}
 }
@@ -70,10 +70,13 @@ void ESP8266_setup()
 	// buzzer not needed.
 //	pinMode (BUZZER_PIN, OUTPUT);
 
-    // Init A0
-    UART_init();
+
     // Init A1
     UART_TERMINAL_init();
+
+    // Init A0
+    UART_init();
+
 
 //	Serial.begin (115200);
 
@@ -136,7 +139,7 @@ void esp8266poweron ()
 {
 	GPIO_setOutputHighOnPin(ESP8266_CH_PD_PORT, ESP8266_CH_PD_PIN);
 //	digitalWrite (ESP8266_CH_PD_PIN, HIGH);
-	delay (5000);
+	delay(5000);
 
 //	while (Serial.available () > 0) {
 //		Serial.read ();
@@ -206,7 +209,7 @@ void esp8266rx (const char * cmd)
 
 void esp8266cmd (const char * cmd)
 {
-	UARTSendChar(cmd);
+	Print_String("AT");
 //	Serial.println (cmd);
 //	Serial.flush ();
 	esp8266waitrx (cmd);

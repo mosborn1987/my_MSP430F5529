@@ -67,7 +67,8 @@ void __attribute__ ((interrupt(USCI_A0_VECTOR))) USCI_A0_ISR (void)
 			UCA1TXBUF = UCA0RXBUF; // TX -> RXed character
 
 			// Store data in buffer
-			UART_buffer[buffer_index++] = UCA0RXBUF;
+			UART_buffer[buffer_index] = UCA0RXBUF;
+			++buffer_index;
 			break;
 		}
 

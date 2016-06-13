@@ -68,6 +68,8 @@ void UART_init(void)
 	UCA0CTL1 &= ~UCSWRST; // **Initialize USCI state machine**
 	UCA0IE |= UCRXIE; // Enable USCI_A1 RX interrupt
 
+	UART_TERMINAL_Print_String_NL("UART A0 Initialized:");
+
 	return;
 }
 
