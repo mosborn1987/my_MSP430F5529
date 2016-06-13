@@ -18,7 +18,14 @@
 
 ///////////////////////////////////////////////////////////////////
 // Declare buffer size and data type
-unsigned char UART_buffer[100];
+unsigned char UART_buffer[100] = "hello_world";
+
+void print_UART_buffer(void)
+{
+//	UART_TERMINAL_Print_String_NL(UART_buffer);
+	UART_TERMINAL_SendArray(&UART_buffer, strlen(UART_buffer));
+}
+
 
 ////////////////////////////////////////////////////////////////////////
 // Function Declaration - Each Function prototype is defined later

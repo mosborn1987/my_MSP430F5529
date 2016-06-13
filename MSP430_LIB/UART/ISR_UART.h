@@ -79,7 +79,7 @@ void __attribute__ ((interrupt(USCI_A0_VECTOR))) USCI_A0_ISR (void)
 		default: break;
 
 	}
-	_BIC_SR(LPM0_EXIT);
+//	_BIC_SR(LPM0_EXIT);
 }
 
 
