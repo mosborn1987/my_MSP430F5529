@@ -10,7 +10,9 @@
 
 // Contains 'sprintf'
 #include <stdio.h>
+#include <string.h>
 #include <ISR_UART.h>
+#include <usci_a_uart.h>
 
 ////////////////////////////////////////////////////////////////////////
 // Function Declaration - Each Function prototype is defined later

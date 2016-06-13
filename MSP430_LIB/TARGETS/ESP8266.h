@@ -12,6 +12,9 @@
 #include <UART_A0.h>
 #include <UART_TERMINAL_A1.h>
 #include <gpio.h>
+#include <string.h>
+#include <stdio.h>
+#include <stdint.h>
 //#include <ISR_UART.h>
 
 
@@ -42,6 +45,15 @@ char out_buf[MAX_OUT_BUF_SZ];
 char aux_buf[MAX_AUX_BUF_SZ];
 
 //DHT22 dht (DHT_PIN);
+void delay(uint8_t delay_cycles);
+void delay(uint8_t delay_cycles)
+{
+	while(delay_cycles>0)
+	{
+		_delay_cycles(1000);
+		delay_cycles--;
+	}
+}
 
 void init_CH_PD_PIN(void);
 void init_CH_PD_PIN(void)
@@ -50,7 +62,7 @@ void init_CH_PD_PIN(void)
 	return;
 }
 
-void setup()
+void ESP8266_setup()
 {
 	//pinMode (ESP8266_CH_PD_PIN, OUTPUT);
 	init_CH_PD_PIN();
@@ -115,57 +127,77 @@ void SEND_FAILED_MESSAGE ()
 
 void esp8266shutdown ()
 {
-  digitalWrite (ESP8266_CH_PD_PIN, LOW);
-  delay (100);
+	GPIO_setOutputLowOnPin(ESP8266_CH_PD_PORT, ESP8266_CH_PD_PIN);
+//	digitalWrite (ESP8266_CH_PD_PIN, LOW);
+	delay (100);
 }
 
 void esp8266poweron ()
 {
-  digitalWrite (ESP8266_CH_PD_PIN, HIGH);
-  delay (5000);
+	GPIO_setOutputHighOnPin(ESP8266_CH_PD_PORT, ESP8266_CH_PD_PIN);
+//	digitalWrite (ESP8266_CH_PD_PIN, HIGH);
+	delay (5000);
 
-  while (Serial.available () > 0) {
-    Serial.read ();
-  }
+//	while (Serial.available () > 0) {
+//		Serial.read ();
+//  }
+
 }
 
 void esp8266reboot ()
 {
-  esp8266shutdown ();
-  esp8266poweron ();
+  esp8266shutdown();
+  esp8266poweron();
 
-  esp8266cmd ("AT");
-  esp8266cmd ("AT+CIPMODE=0");
-  esp8266cmd ("AT+CIPMUX=0");
-  esp8266cmd ("AT+CIPSTART=\"TCP\",\"" SRV_ADDR "\"," SRV_PORT);
+  esp8266cmd("AT");
+  esp8266cmd("AT+CIPMODE=0");
+  esp8266cmd("AT+CIPMUX=0");
+  esp8266cmd("AT+CIPSTART=\"TCP\",\"" SRV_ADDR "\"," SRV_PORT);
 }
 
-void esp8266waitrx (const char * cmd) {
-  unsigned retry_cnt = 0;
+void esp8266waitrx (const char * cmd)
+{
+	unsigned retry_cnt = 0;
 
-  while (!Serial.available ()) {
-    ++retry_cnt;
-    delay (100);
+	while(!UART_DATA_AVALIABLE())
+	{
+		++retry_cnt;
+		delay(100);
 
-    if (retry_cnt > MAX_RETRY_CNT) {
-      failure (); // Failed to read from ESP8266
-    }
+	    if (retry_cnt > MAX_RETRY_CNT) {
+	      failure (); // Failed to read from ESP8266
+	}
+
+//  while (!Serial.available ()) {
+//    ++retry_cnt;
+//    delay (100);
+//
+//    if (retry_cnt > MAX_RETRY_CNT) {
+//      failure (); // Failed to read from ESP8266
+//    }
   }
 }
 
-void esp8266rx (const char * cmd) {
-  unsigned bytes_available = 0;
-  unsigned offset = 0;
+void esp8266rx (const char * cmd)
+{
+	// Make note of the UART_array size.
+	unsigned bytes_available = UART_DATA_AVALIABLE();
 
-  while ((bytes_available = Serial.available ())) {
-    offset += Serial.readBytes (in_buf + offset, bytes_available);
-  }
+	// Copy info in buffer over to in_buf array.
+	copy_UART_buffer(in_buf);
 
-  if (offset == 0) {
-    return;
-  }
 
-  in_buf[offset+1] = '\0';
+//  unsigned offset = 0;
+//
+//  while ((bytes_available = Serial.available ())) {
+//    offset += Serial.readBytes (in_buf + offset, bytes_available);
+//  }
+
+//  if (offset == 0) {
+//    return;
+//  }
+
+  in_buf[bytes_available+1] = '\0';
 
   if (strstr (in_buf, "ERROR") != NULL) {
     failure (); // ESP8266 returned error
@@ -174,11 +206,11 @@ void esp8266rx (const char * cmd) {
 
 void esp8266cmd (const char * cmd)
 {
-  Serial.println (cmd);
-  Serial.flush ();
-
-  esp8266waitrx (cmd);
-  esp8266rx (cmd);
+	UARTSendChar(cmd);
+//	Serial.println (cmd);
+//	Serial.flush ();
+	esp8266waitrx (cmd);
+	esp8266rx (cmd);
 }
 
 void esp8266send (const char * packet)
@@ -192,22 +224,23 @@ void esp8266send (const char * packet)
 
 void failure ()
 {
-  pinMode (RED_LED, OUTPUT);
-
-  unsigned cnt = 0;
-  unsigned tone_interval = 1U;
-
-  while (true) {
-    digitalWrite (RED_LED, (cnt % 2) ? HIGH : LOW);
-    sleep (ALARM_DELAY_MS);
-
-    if ((cnt % tone_interval) == 0) {
-      SEND_FAILED_MESSAGE ();
-      tone_interval *= 10U;
-    }
-
-    ++cnt;
-  }
+	SEND_FAILED_MESSAGE();
+//  pinMode (RED_LED, OUTPUT);
+//
+//  unsigned cnt = 0;
+//  unsigned tone_interval = 1U;
+//
+//  while (true) {
+//    digitalWrite (RED_LED, (cnt % 2) ? HIGH : LOW);
+//    sleep (ALARM_DELAY_MS);
+//
+//    if ((cnt % tone_interval) == 0) {
+//      SEND_FAILED_MESSAGE ();
+//      tone_interval *= 10U;
+//    }
+//
+//    ++cnt;
+//  }
 }
 
 
