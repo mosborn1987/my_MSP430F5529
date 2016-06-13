@@ -14,9 +14,12 @@ void main(void)
 {
     //Stop watchdog timer
     WDT_A_hold(WDT_A_BASE);
-    UART_TERMINAL_init();
+
+    // Init A0
     UART_init();
 
+    // Init A1
+    UART_TERMINAL_init();
 
     while(1)
     {

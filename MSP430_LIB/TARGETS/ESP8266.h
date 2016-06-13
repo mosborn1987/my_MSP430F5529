@@ -8,7 +8,7 @@
 //#ifndef DRIVERLIB_MSP430_LIB_TARGETS_ESP8266_H_
 //#define DRIVERLIB_MSP430_LIB_TARGETS_ESP8266_H_
 //
-//#include <USCI_B0_SPI.h>
+////#include <USCI_B0_SPI.h>
 //#include <UART_A0.h>
 //#include <UART_TERMINAL_A1.h>
 //#include <gpio.h>
@@ -26,15 +26,15 @@
 //#define ESP8266_CH_PD_PORT GPIO_PORT_P1
 //#define ESP8266_CH_PD_PIN  GPIO_PIN6
 //
-//#define BUZZER_PIN P1_4
-//#define RED_LED P1_0
+////#define BUZZER_PIN P1_4
+////#define RED_LED P1_0
 //
 //#define MAX_IN_BUF_SZ 64U
 //#define MAX_OUT_BUF_SZ 64U
 //#define MAX_AUX_BUF_SZ 32U
 //
 //#define MEASUREMENTS_DELAY_S 60U
-//#define ALARM_DELAY_MS 1000U
+////#define ALARM_DELAY_MS 1000U
 //#define MAX_RETRY_CNT 100U
 //
 //char in_buf[MAX_IN_BUF_SZ];
@@ -58,15 +58,17 @@
 //	// buzzer not needed.
 ////	pinMode (BUZZER_PIN, OUTPUT);
 //
-//	// Initialize both UARTs
-//	UART_init();
-//	UART_TERMINAL_init();
+//    // Init A0
+//    UART_init();
+//    // Init A1
+//    UART_TERMINAL_init();
 //
-//	Serial.begin (115200);
+////	Serial.begin (115200);
 //
-//	dht.begin ();
+////	dht.begin ();
 //
-//	esp8266reboot ();
+//    esp8266reboot();
+//
 //}
 //
 //void loop()
