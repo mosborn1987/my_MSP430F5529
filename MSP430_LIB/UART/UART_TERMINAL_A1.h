@@ -14,6 +14,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <ISR_UART.h>
+#include <usci_a_uart.h>
 
 ///////////////////////////////////////////////////////////////////
 // Declare buffer size and data type
@@ -32,19 +33,46 @@ void UART_TERMINAL_Print_String(const char *my_Char);
 void UART_TERMINAL_Print_String_NL(const char *my_Char);
 void UART_TERMINAL_Enter(void);
 void UART_TERMINAL_System_Bell(void);
+void set_clock_baud_A1_115200(void);
+
+
+void set_clock_baud_A1_115200(void)
+{
+	//Baudrate = 115200, clock freq = 1.048MHz
+	//UCBRx = 9, UCBRFx = 0, UCBRSx = 2, UCOS16 = 0
+
+	USCI_A_UART_initParam param = {0};
+	param.selectClockSource = USCI_A_UART_CLOCKSOURCE_SMCLK;
+	param.clockPrescalar = 9;
+	param.firstModReg = 0;
+	param.secondModReg = 2;
+	param.parity = USCI_A_UART_NO_PARITY;
+	param.msborLsbFirst = USCI_A_UART_LSB_FIRST;
+	param.numberofStopBits = USCI_A_UART_ONE_STOP_BIT;
+	param.uartMode = USCI_A_UART_MODE;
+	param.overSampling = USCI_A_UART_LOW_FREQUENCY_BAUDRATE_GENERATION;
+
+	if(STATUS_FAIL == USCI_A_UART_init(USCI_A1_BASE, &param))
+	{
+		return;
+	}
+
+}
 
 ////////////////////////////////////////////////////////////////////////
 // Configure clocks and hardware needed for the UART
 void UART_TERMINAL_init(void)
 {
+	set_clock_baud_A1_115200();
+
 	////////////////////////////////////////////////////////////////////
 	//
 	P4SEL = BIT5+BIT4; // P4.4, P4.5 = USCI_A0 TXD/RXD
-	UCA1CTL1 |= UCSWRST; // **Put state machine in reset**
-	UCA1CTL1 |= UCSSEL_2; // SMCLK
-	UCA1BR0 = 6; // 1MHz 9600 (see User's Guide)
-	UCA1BR1 = 0; // 1MHz 9600
-	UCA1MCTL = UCBRS_0 + UCBRF_13 + UCOS16; // Modln UCBRSx=0, UCBRFx=0,
+//	UCA1CTL1 |= UCSWRST; // **Put state machine in reset**
+//	UCA1CTL1 |= UCSSEL_2; // SMCLK
+//	UCA1BR0 = 6; // 1MHz 9600 (see User's Guide)
+//	UCA1BR1 = 0; // 1MHz 9600
+//	UCA1MCTL = UCBRS_0 + UCBRF_13 + UCOS16; // Modln UCBRSx=0, UCBRFx=0,
 
 	// over sampling
 	UCA1CTL1 &= ~UCSWRST; // **Initialize USCI state machine**

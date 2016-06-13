@@ -24,20 +24,43 @@ void UART_Test( void );
 void Print_String(const char *my_Char);
 void Print_String_NL(const char *my_Char);
 
+void set_clock_baud_A0_115200(void);
+void set_clock_baud_A0_115200(void)
+{
+	//Baudrate = 115200, clock freq = 1.048MHz
+	//UCBRx = 9, UCBRFx = 0, UCBRSx = 2, UCOS16 = 0
+
+	USCI_A_UART_initParam param_A0 = {0};
+	param_A0.selectClockSource = USCI_A_UART_CLOCKSOURCE_SMCLK;
+	param_A0.clockPrescalar = 9;
+	param_A0.firstModReg = 0;
+	param_A0.secondModReg = 2;
+	param_A0.parity = USCI_A_UART_NO_PARITY;
+	param_A0.msborLsbFirst = USCI_A_UART_LSB_FIRST;
+	param_A0.numberofStopBits = USCI_A_UART_ONE_STOP_BIT;
+	param_A0.uartMode = USCI_A_UART_MODE;
+	param_A0.overSampling = USCI_A_UART_LOW_FREQUENCY_BAUDRATE_GENERATION;
+
+	if(STATUS_FAIL == USCI_A_UART_init(USCI_A0_BASE, &param_A0))
+	{
+		return;
+	}
+
+}
+
 ////////////////////////////////////////////////////////////////////////
 // Configure clocks and hardware needed for the UART
 void UART_init(void)
 {
+	set_clock_baud_A0_115200();
 	////////////////////////////////////////////////////////////////////
 	//
-
-//	P4SEL = BIT5+BIT4; // P4.4, P4.5 = USCI_A0 TXD/RXD
-	P3SEL = BIT3 +BIT4;
-	UCA0CTL1 |= UCSWRST; // **Put state machine in reset**
-	UCA0CTL1 |= UCSSEL_2; // SMCLK
-	UCA0BR0 = 6; // 1MHz 9600 (see User's Guide)
-	UCA0BR1 = 0; // 1MHz 9600
-	UCA0MCTL = UCBRS_0 + UCBRF_13 + UCOS16; // Modln UCBRSx=0, UCBRFx=0,
+	P3SEL = BIT3 +BIT4;// P3.3 TXD/P3.4 RXD
+//	UCA0CTL1 |= UCSWRST; // **Put state machine in reset**
+//	UCA0CTL1 |= UCSSEL_2; // SMCLK
+//	UCA0BR0 = 6; // 1MHz 9600 (see User's Guide)
+//	UCA0BR1 = 0; // 1MHz 9600
+//	UCA0MCTL = UCBRS_0 + UCBRF_13 + UCOS16; // Modln UCBRSx=0, UCBRFx=0,
 
 	// over sampling
 	UCA0CTL1 &= ~UCSWRST; // **Initialize USCI state machine**

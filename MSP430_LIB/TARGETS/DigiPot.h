@@ -9,6 +9,7 @@
 #define DRIVERLIB_DIGIPOT_H_
 
 #include <USCI_B0_SPI.h>
+#include <gpio.h>
 
 #define DIGI_POT_DATA_BYTE_SIZE     0x02
 #define DIGI_POT_MAX_BAUD_RATE      9600

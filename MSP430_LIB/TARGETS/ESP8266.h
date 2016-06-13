@@ -9,7 +9,10 @@
 //#define DRIVERLIB_MSP430_LIB_TARGETS_ESP8266_H_
 //
 //#include <USCI_B0_SPI.h>
-//#include <UART.h>
+//#include <UART_A0.h>
+//#include <UART_TERMINAL_A1.h>
+//#include <gpio.h>
+////#include <ISR_UART.h>
 //
 //
 ////#include "tones.h"
@@ -19,8 +22,10 @@
 //#define SRV_ADDR "192.168.1.100"
 //#define SRV_PORT "9977"
 //
-//#define DHT_PIN P2_1
-//#define ESP8266_CH_PD_PIN P2_2
+////#define DHT_PIN P2_1
+//#define ESP8266_CH_PD_PORT GPIO_PORT_P1
+//#define ESP8266_CH_PD_PIN  GPIO_PIN6
+//
 //#define BUZZER_PIN P1_4
 //#define RED_LED P1_0
 //
@@ -38,18 +43,30 @@
 //
 ////DHT22 dht (DHT_PIN);
 //
+//void init_CH_PD_PIN(void);
+//void init_CH_PD_PIN(void)
+//{
+//	GPIO_setAsOutputPin(ESP8266_CH_PD_PORT, ESP8266_CH_PD_PIN);
+//	return;
+//}
+//
 //void setup()
 //{
-//  pinMode (ESP8266_CH_PD_PIN, OUTPUT);
-//  pinMode (BUZZER_PIN, OUTPUT);
+//	//pinMode (ESP8266_CH_PD_PIN, OUTPUT);
+//	init_CH_PD_PIN();
 //
-//  init_UART ();
+//	// buzzer not needed.
+////	pinMode (BUZZER_PIN, OUTPUT);
 //
-//  Serial.begin (115200);
+//	// Initialize both UARTs
+//	UART_init();
+//	UART_TERMINAL_init();
 //
-//  dht.begin ();
+//	Serial.begin (115200);
 //
-//  esp8266reboot ();
+//	dht.begin ();
+//
+//	esp8266reboot ();
 //}
 //
 //void loop()
