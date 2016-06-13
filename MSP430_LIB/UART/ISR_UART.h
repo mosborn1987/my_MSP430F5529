@@ -14,7 +14,7 @@
 ////////////////////////////////////////////////////////////////////////
 // Variable declaration
 static volatile char data;
-unsigned char UART_buffer[100];
+unsigned char UART_buffer[100] = "Hellow World - String Init";
 static volatile uint8_t buffer_index = 0;
 
 // Define Function Prototypes

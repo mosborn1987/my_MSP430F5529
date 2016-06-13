@@ -18,12 +18,18 @@
 
 ///////////////////////////////////////////////////////////////////
 // Declare buffer size and data type
-unsigned char UART_buffer[100] = "hello_world";
+//unsigned char UART_buffer[100] = "hello_world";
 
 void print_UART_buffer(void)
 {
 //	UART_TERMINAL_Print_String_NL(UART_buffer);
+//	UART_TERMINAL_SendArray(&UART_buffer, strlen(UART_buffer));
+
+	// Send formatted buffer to UART
 	UART_TERMINAL_SendArray(&UART_buffer, strlen(UART_buffer));
+
+	// Add a '\n\r' to the end of a line
+	UART_TERMINAL_Enter();
 }
 
 
@@ -84,6 +90,9 @@ void UART_TERMINAL_init(void)
 	// over sampling
 	UCA1CTL1 &= ~UCSWRST; // **Initialize USCI state machine**
 	UCA1IE |= UCRXIE; // Enable USCI_A1 RX interrupt
+
+	print_UART_buffer();
+	print_UART_buffer();
 
     UART_TERMINAL_Print_String_NL("The UART Terminal A1 has been initialized:");
 
