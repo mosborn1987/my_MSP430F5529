@@ -15,11 +15,11 @@
 // Variable declaration
 static volatile char data;
 unsigned char UART_buffer[100] = "Hellow World - String Init";
-static volatile uint8_t buffer_index = 0;
+extern unsigned char buffer_index = 0;
 
 // Define Function Prototypes
 void copy_UART_buffer(char *dest_array);
-uint8_t UART_DATA_AVALIABLE(void);
+unsigned char UART_DATA_AVALIABLE(void);
 void reset_UART_buffer_index(void);
 
 // Functions
@@ -79,7 +79,7 @@ void __attribute__ ((interrupt(USCI_A0_VECTOR))) USCI_A0_ISR (void)
 		default: break;
 
 	}
-//	_BIC_SR(LPM0_EXIT);
+	_BIC_SR(LPM0_EXIT);
 }
 
 
@@ -108,8 +108,11 @@ void __attribute__ ((interrupt(USCI_A1_VECTOR))) USCI_A1_ISR (void)
 			// TX -> RXed character
 			UCA1TXBUF = UCA1RXBUF;
 
-			data = UCA1RXBUF;
+			// Store data in buffer
+			UART_buffer[buffer_index] = UCA0RXBUF;
+			++buffer_index;
 			break;
+
 		}
 
 

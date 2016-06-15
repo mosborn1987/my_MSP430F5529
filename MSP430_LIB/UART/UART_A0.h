@@ -26,7 +26,57 @@ void UART_Test( void );
 void Print_String(const char *my_Char);
 void Print_String_NL(const char *my_Char);
 
+void set_clock_baud_A0_test(void);
+void set_clock_baud_A0_test(void)
+{
+	//Baudrate = 115200, clock freq = 1.048MHz 1,048,000
+	//UCBRx = 9, UCBRFx = 0, UCBRSx = 2, UCOS16 = 0
+
+	USCI_A_UART_initParam param_A0 = {0};
+	param_A0.selectClockSource = USCI_A_UART_CLOCKSOURCE_SMCLK;
+
+//	9600(109) , 57600(18) or 115200(9) or 74880(14)
+	param_A0.clockPrescalar = 9;
+	param_A0.firstModReg = 0;
+	param_A0.secondModReg = 2;
+	param_A0.parity = USCI_A_UART_NO_PARITY;
+	param_A0.msborLsbFirst = USCI_A_UART_LSB_FIRST;//USCI_A_UART_MSB_FIRST;//USCI_A_UART_LSB_FIRST;
+	param_A0.numberofStopBits = USCI_A_UART_ONE_STOP_BIT;
+	param_A0.uartMode = USCI_A_UART_MODE;
+	param_A0.overSampling = USCI_A_UART_LOW_FREQUENCY_BAUDRATE_GENERATION;
+
+	if(STATUS_FAIL == USCI_A_UART_init(USCI_A0_BASE, &param_A0))
+	{
+		return;
+	}
+
+}
+
+
 void set_clock_baud_A0_115200(void);
+void set_clock_baud_A0_9600(void);
+void set_clock_baud_A0_9600(void)
+{
+	//Baudrate = 115200, clock freq = 1.048MHz
+	//UCBRx = 9, UCBRFx = 0, UCBRSx = 2, UCOS16 = 0
+
+	USCI_A_UART_initParam param_A0 = {0};
+	param_A0.selectClockSource = USCI_A_UART_CLOCKSOURCE_SMCLK;
+	param_A0.clockPrescalar = 109;
+	param_A0.firstModReg = 0;
+	param_A0.secondModReg = 2;
+	param_A0.parity = USCI_A_UART_NO_PARITY;
+	param_A0.msborLsbFirst = USCI_A_UART_LSB_FIRST;
+	param_A0.numberofStopBits = USCI_A_UART_ONE_STOP_BIT;
+	param_A0.uartMode = USCI_A_UART_MODE;
+	param_A0.overSampling = USCI_A_UART_LOW_FREQUENCY_BAUDRATE_GENERATION;
+
+	if(STATUS_FAIL == USCI_A_UART_init(USCI_A0_BASE, &param_A0))
+	{
+		return;
+	}
+
+}
 void set_clock_baud_A0_115200(void)
 {
 	//Baudrate = 115200, clock freq = 1.048MHz
@@ -54,7 +104,9 @@ void set_clock_baud_A0_115200(void)
 // Configure clocks and hardware needed for the UART
 void UART_init(void)
 {
-	set_clock_baud_A0_115200();
+	set_clock_baud_A0_test();
+//	set_clock_baud_A0_9600();
+//	set_clock_baud_A0_115200();
 	////////////////////////////////////////////////////////////////////
 	//
 	P3SEL = BIT3 +BIT4;// P3.3 TXD/P3.4 RXD
@@ -221,7 +273,14 @@ void Print_String_NL(const char *my_Char)
 	UARTSendArray(&UART_buffer, strlen(UART_buffer));
 
 	// Add a '\n\r' to the end of a line
-	UART_Enter();
+//	UART_Enter();
+
+	// This ending if spacific to the ESP2866
+	sprintf( UART_buffer, "\n\r\0");
+//	sprintf( UART_buffer, "\r\0");
+
+	// Send formatted buffer to UART
+	UARTSendArray(&UART_buffer, strlen(UART_buffer));
 
 }
 

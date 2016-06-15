@@ -15,6 +15,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <stdint.h>
+#include <time.h>
 //#include <ISR_UART.h>
 
 
@@ -79,18 +80,17 @@ void set_RESET_HIGH(void)
 void init_CH_PD_PIN(void);
 void init_CH_PD_PIN(void)
 {
+	set_CH_PD_LOW();
 	GPIO_setAsOutputPin(ESP8266_CH_PD_PORT, ESP8266_CH_PD_PIN);
-	GPIO_setAsOutputPin(ESP8266_RESET_PORT, ESP8266_RESET_PIN);
-	GPIO_setOutputLowOnPin(ESP8266_RESET_PORT, ESP8266_RESET_PIN);
+//	set_CH_PD_HIGH();
+//	GPIO_setAsOutputPin(ESP8266_RESET_PORT, ESP8266_RESET_PIN);
+//	GPIO_setOutputLowOnPin(ESP8266_RESET_PORT, ESP8266_RESET_PIN);
 
 	return;
 }
 
 void ESP8266_setup()
 {
-	//pinMode (ESP8266_CH_PD_PIN, OUTPUT);
-	init_CH_PD_PIN();
-
 	// buzzer not needed.
 //	pinMode (BUZZER_PIN, OUTPUT);
 
@@ -100,7 +100,10 @@ void ESP8266_setup()
 
     // Init A0
     UART_init();
-    print_UART_buffer();
+//    print_UART_buffer();
+
+	//pinMode (ESP8266_CH_PD_PIN, OUTPUT);
+	init_CH_PD_PIN();
 
 
 //	Serial.begin (115200);
@@ -160,16 +163,17 @@ void esp8266shutdown ()
 	set_RESET_HIGH();
 //	GPIO_setOutputLowOnPin(ESP8266_CH_PD_PORT, ESP8266_CH_PD_PIN);
 //	digitalWrite (ESP8266_CH_PD_PIN, LOW);
-	delay (1000);
+	time_delay(1);
 }
 
 void esp8266poweron ()
 {
 	set_CH_PD_HIGH();
-	set_RESET_LOW();
+//	set_RESET_LOW();
 //	GPIO_setOutputHighOnPin(ESP8266_CH_PD_PORT, ESP8266_CH_PD_PIN);
 //	digitalWrite (ESP8266_CH_PD_PIN, HIGH);
-	delay(1000);
+//	delay(1000);
+	time_delay(5);
 
 //	while (Serial.available () > 0) {
 //		Serial.read ();
@@ -180,8 +184,18 @@ void esp8266poweron ()
 void esp8266reboot ()
 {
 	__bis_SR_register(GIE);
-	esp8266shutdown();
-	esp8266poweron();
+
+//	while(1)
+	{
+		esp8266shutdown();
+		esp8266poweron();
+
+//		UART_TERMINAL_Print_String_NL("New Line");
+	}
+
+
+
+	reset_UART_buffer_index();
 
 	esp8266cmd("AT");
 	esp8266cmd("AT+CIPMODE=0");
@@ -194,10 +208,12 @@ void esp8266waitrx (const char * cmd)
 	unsigned retry_cnt = 0;
 	uint8_t dAvaliable = UART_DATA_AVALIABLE();
 
+	delay(250);
+
 	while((dAvaliable == 0))
 	{
 		++retry_cnt;
-		delay(300);
+		delay(500);
 
 	    if (retry_cnt > MAX_RETRY_CNT) {
 	      failure (); // Failed to read from ESP8266
@@ -246,16 +262,16 @@ void esp8266rx (const char * cmd)
 
 void esp8266cmd (const char * cmd)
 {
-	UART_TERMINAL_Print_String_NL(cmd);
+//	UART_TERMINAL_Print_String_NL(cmd);
 
 	__bis_SR_register(GIE);
-	Print_String(cmd);
+	Print_String_NL(cmd);
 
 
 //	Serial.println (cmd);
 //	Serial.flush ();
-	esp8266waitrx (cmd);
-	esp8266rx (cmd);
+	esp8266waitrx(cmd);
+	esp8266rx(cmd);
 }
 
 void esp8266send (const char * packet)
@@ -270,6 +286,7 @@ void esp8266send (const char * packet)
 void failure ()
 {
 	SEND_FAILED_MESSAGE();
+	time_delay(10);
 //  pinMode (RED_LED, OUTPUT);
 //
 //  unsigned cnt = 0;

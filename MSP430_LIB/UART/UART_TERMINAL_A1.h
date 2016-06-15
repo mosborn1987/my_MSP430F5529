@@ -22,14 +22,17 @@
 
 void print_UART_buffer(void)
 {
+//	UART_TERMINAL_Enter();
 //	UART_TERMINAL_Print_String_NL(UART_buffer);
 //	UART_TERMINAL_SendArray(&UART_buffer, strlen(UART_buffer));
 
 	// Send formatted buffer to UART
-	UART_TERMINAL_SendArray(&UART_buffer, strlen(UART_buffer));
+	UART_TERMINAL_SendArray(&UART_buffer, buffer_index);//strlen(UART_buffer));
 
 	// Add a '\n\r' to the end of a line
 	UART_TERMINAL_Enter();
+
+	reset_UART_buffer_index();
 }
 
 
@@ -46,8 +49,34 @@ void UART_TERMINAL_Print_String(const char *my_Char);
 void UART_TERMINAL_Print_String_NL(const char *my_Char);
 void UART_TERMINAL_Enter(void);
 void UART_TERMINAL_System_Bell(void);
+
+void set_clock_baud_A1_9600(void);
 void set_clock_baud_A1_115200(void);
 
+void set_clock_baud_A1_9600(void)
+{
+	//Baudrate = 115200, clock freq = 1.048MHz
+	//UCBRx = 9, UCBRFx = 0, UCBRSx = 2, UCOS16 = 0
+
+	USCI_A_UART_initParam param = {0};
+	param.selectClockSource = USCI_A_UART_CLOCKSOURCE_SMCLK;
+	//	9600(109) , 57600(18) or 115200(9) or 74880(14)
+
+	param.clockPrescalar = 9;
+	param.firstModReg = 0;
+	param.secondModReg = 2;
+	param.parity = USCI_A_UART_NO_PARITY;
+	param.msborLsbFirst = USCI_A_UART_LSB_FIRST;
+	param.numberofStopBits = USCI_A_UART_ONE_STOP_BIT;
+	param.uartMode = USCI_A_UART_MODE;
+	param.overSampling = USCI_A_UART_LOW_FREQUENCY_BAUDRATE_GENERATION;
+
+	if(STATUS_FAIL == USCI_A_UART_init(USCI_A1_BASE, &param))
+	{
+		return;
+	}
+
+}
 
 void set_clock_baud_A1_115200(void)
 {
@@ -76,7 +105,8 @@ void set_clock_baud_A1_115200(void)
 // Configure clocks and hardware needed for the UART
 void UART_TERMINAL_init(void)
 {
-	set_clock_baud_A1_115200();
+	set_clock_baud_A1_9600();
+//	set_clock_baud_A1_115200();
 
 	////////////////////////////////////////////////////////////////////
 	//
@@ -91,8 +121,8 @@ void UART_TERMINAL_init(void)
 	UCA1CTL1 &= ~UCSWRST; // **Initialize USCI state machine**
 	UCA1IE |= UCRXIE; // Enable USCI_A1 RX interrupt
 
-	print_UART_buffer();
-	print_UART_buffer();
+//	print_UART_buffer();
+//	print_UART_buffer();
 
     UART_TERMINAL_Print_String_NL("The UART Terminal A1 has been initialized:");
 
