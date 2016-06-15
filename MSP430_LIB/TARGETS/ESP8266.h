@@ -154,7 +154,7 @@ void sTone (unsigned note, unsigned len)
 void SEND_FAILED_MESSAGE ()
 {
 	UART_TERMINAL_Print_String_NL("THE PROCESSS FAILED:");
-	print_UART_buffer();
+//	print_UART_buffer();
 }
 
 void esp8266shutdown ()
@@ -173,7 +173,7 @@ void esp8266poweron ()
 //	GPIO_setOutputHighOnPin(ESP8266_CH_PD_PORT, ESP8266_CH_PD_PIN);
 //	digitalWrite (ESP8266_CH_PD_PIN, HIGH);
 //	delay(1000);
-	time_delay(5);
+	time_delay(6);
 
 //	while (Serial.available () > 0) {
 //		Serial.read ();
@@ -194,13 +194,16 @@ void esp8266reboot ()
 	}
 
 
-
+	delay(50);
 	reset_UART_buffer_index();
 
 	esp8266cmd("AT");
+	esp8266cmd("AT+RST");
 	esp8266cmd("AT+CIPMODE=0");
 	esp8266cmd("AT+CIPMUX=0");
 	esp8266cmd("AT+CIPSTART=\"TCP\",\"" SRV_ADDR "\"," SRV_PORT);
+	delay(50);
+	delay(50);
 }
 
 void esp8266waitrx (const char * cmd)
@@ -208,7 +211,7 @@ void esp8266waitrx (const char * cmd)
 	unsigned retry_cnt = 0;
 	uint8_t dAvaliable = UART_DATA_AVALIABLE();
 
-	delay(250);
+	delay(350);
 
 	while((dAvaliable == 0))
 	{
@@ -256,6 +259,7 @@ void esp8266rx (const char * cmd)
   in_buf[bytes_available+1] = '\0';
 
   if (strstr (in_buf, "ERROR") != NULL) {
+	  UART_TERMINAL_Print_String_NL("Device Returned the Value ERROR");
     failure (); // ESP8266 returned error
   }
 }
@@ -272,6 +276,8 @@ void esp8266cmd (const char * cmd)
 //	Serial.flush ();
 	esp8266waitrx(cmd);
 	esp8266rx(cmd);
+
+	delay(50);
 }
 
 void esp8266send (const char * packet)
