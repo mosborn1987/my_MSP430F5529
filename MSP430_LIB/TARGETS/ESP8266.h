@@ -139,6 +139,7 @@ void esp8266poweron ()
 
 }
 
+//char my_network_cmd[] = "AT+CWJAP= TP-LINK_7E50DA, 98195916";
 void esp8266reboot ()
 {
 	__bis_SR_register(GIE);
@@ -157,7 +158,14 @@ void esp8266reboot ()
 	time_delay(2);
 	esp8266cmd("AT+CWJAP?");
 	time_delay(20);
+
+	// Check to see which Networks are in your area
 	esp8266cmd("AT+CWLAP");
+	time_delay(20);
+
+	// Join My network
+	esp8266cmd("AT+CWJAP=\"TP-LINK_7E50DA\",\"98195916\"");
+
 //	esp8266cmd("AT+CIFSR"); // Find the IP address of the module.
 //	esp8266cmd("AT+RST");
 
