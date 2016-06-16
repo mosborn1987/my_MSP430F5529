@@ -198,16 +198,23 @@ void esp8266reboot ()
 	}
 
 
-	delay(50);
+	delay(100);
 	reset_UART_buffer_index();
+	reset_UART_buffer_index();
+////	UART_Enter();
+//	Print_String("AT");
+//	time_delay(1);
+////	UART_Enter();
+//	Print_String("AT");
+//	time_delay(1);
 
 	esp8266cmd("AT");
 	esp8266cmd("AT+GMR"); // Request Version Type
 	esp8266cmd("AT+CIFSR"); // Find the IP address of the module.
 	esp8266cmd("AT+RST");
-	esp8266cmd("AT+CIPMODE=0");
-	esp8266cmd("AT+CIPMUX=0");
-	esp8266cmd("AT+CIPSTART=\"TCP\",\"" SRV_ADDR "\"," SRV_PORT);
+//	esp8266cmd("AT+CIPMODE=0");
+//	esp8266cmd("AT+CIPMUX=0");
+//	esp8266cmd("AT+CIPSTART=\"TCP\",\"" SRV_ADDR "\"," SRV_PORT);
 	delay(50);
 	delay(50);
 }
@@ -249,7 +256,7 @@ void esp8266rx (const char * cmd)
 	// Copy info in buffer over to in_buf array.
 	copy_UART_buffer(in_buf);
 
-	UART_TERMINAL_Print_String_NL(in_buf);
+//	UART_TERMINAL_Print_String_NL(in_buf);
 
 
 //  unsigned offset = 0;
@@ -275,8 +282,9 @@ void esp8266cmd (const char * cmd)
 //	UART_TERMINAL_Print_String_NL(cmd);
 
 	__bis_SR_register(GIE);
+	reset_UART_buffer_index();
 	Print_String_NL(cmd);
-
+//	reset_UART_buffer_index();
 
 //	Serial.println (cmd);
 //	Serial.flush ();
