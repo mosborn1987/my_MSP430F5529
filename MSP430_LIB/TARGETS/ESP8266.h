@@ -166,8 +166,10 @@ void esp8266reboot ()
 	// Join My network
 	esp8266cmd("AT+CWJAP=\"TP-LINK_7E50DA\",\"98195916\"");
 
-//	esp8266cmd("AT+CIFSR"); // Find the IP address of the module.
-//	esp8266cmd("AT+RST");
+	esp8266cmd("AT+CIFSR"); // Find the IP address of the module.
+	time_delay(20);
+
+	//	esp8266cmd("AT+RST");
 
 //	esp8266cmd("AT+CIPMODE=0");
 //	esp8266cmd("AT+CIPMUX=0");
