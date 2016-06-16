@@ -276,11 +276,11 @@ void Print_String_NL(const char *my_Char)
 //	UART_Enter();
 
 	// This ending if spacific to the ESP2866
-	sprintf( UART_buffer, "\n\r\0"); // UART Message "ERROR" is returned
-//	sprintf( UART_buffer, "\r\0"); // NO UART Message is returned.
+//	sprintf( UART_buffer, "\n\r\0"); // UART Message "ERROR" is returned
+//	sprintf( UART_buffer, "\n\r"); // NO UART Message is returned.
 
 	// Send formatted buffer to UART
-	UARTSendArray(&UART_buffer, strlen(UART_buffer));
+//	UARTSendArray(&UART_buffer, strlen(UART_buffer));
 
 }
 

@@ -85,9 +85,6 @@ void init_CH_PD_PIN(void)
 
 	set_RESET_LOW();
 	GPIO_setAsOutputPin(ESP8266_RESET_PORT, ESP8266_RESET_PIN);
-//	set_CH_PD_HIGH();
-//	GPIO_setAsOutputPin(ESP8266_RESET_PORT, ESP8266_RESET_PIN);
-//	GPIO_setOutputLowOnPin(ESP8266_RESET_PORT, ESP8266_RESET_PIN);
 
 	return;
 }
@@ -117,55 +114,18 @@ void ESP8266_setup()
 
 }
 
-//void loop()
-//{
-//  esp8266rx (NULL);
-//
-////  boolean flag = dht.get ();
-////  int h = dht.humidityX10 ();
-////  int t = dht.temperatureX10 ();
-//
-//  if (!flag) {
-//    failure (); // failed to read from DHT sensor
-//  }
-//  else {
-////    sprintf (aux_buf, "[H:%d.%d,T:%d.%d]", h / 10, h % 10, t / 10, t % 10);
-//    esp8266send (aux_buf);
-//  }
-//
-//  goLowPower ();
-//}
-
-//void goLowPower ()
-//{
-//  sprintf (aux_buf, "AT+GSLP=", MEASUREMENTS_DELAY_S * 1000 - 250);
-//  esp8266cmd (aux_buf);
-//  sleepSeconds (MEASUREMENTS_DELAY_S);
-//}
-
-void sTone (unsigned note, unsigned len)
-{
-	UART_TERMINAL_Print_String_NL("Tone was Played:");
-//	unsigned duration = 1000U / len;
-//
-//	tone (BUZZER_PIN, note, duration);
-//	delay (duration * 1.3);
-//	noTone (BUZZER_PIN);
-}
 
 
 void SEND_FAILED_MESSAGE ()
 {
-	UART_TERMINAL_Print_String_NL("THE PROCESSS FAILED:");
+//	UART_TERMINAL_Print_String_NL("THE PROCESSS FAILED:");
 //	print_UART_buffer();
 }
 
 void esp8266shutdown ()
 {
 	set_CH_PD_LOW();
-	set_RESET_HIGH();
-//	GPIO_setOutputLowOnPin(ESP8266_CH_PD_PORT, ESP8266_CH_PD_PIN);
-//	digitalWrite (ESP8266_CH_PD_PIN, LOW);
+	set_RESET_LOW();
 	time_delay(1);
 }
 
@@ -173,49 +133,29 @@ void esp8266poweron ()
 {
 	set_CH_PD_HIGH();
 	set_RESET_HIGH();
-//	set_RESET_LOW();
-//	GPIO_setOutputHighOnPin(ESP8266_CH_PD_PORT, ESP8266_CH_PD_PIN);
-//	digitalWrite (ESP8266_CH_PD_PIN, HIGH);
-//	delay(1000);
-	time_delay(6);
-
-//	while (Serial.available () > 0) {
-//		Serial.read ();
-//  }
+	time_delay(11);
 
 }
 
 void esp8266reboot ()
 {
 	__bis_SR_register(GIE);
+	esp8266shutdown();
+	esp8266poweron();
 
-//	while(1)
-	{
-		esp8266shutdown();
-		esp8266poweron();
-
-//		UART_TERMINAL_Print_String_NL("New Line");
-	}
-
-
-	delay(100);
 	reset_UART_buffer_index();
+	time_delay(11);
 	reset_UART_buffer_index();
-////	UART_Enter();
-//	Print_String("AT");
-//	time_delay(1);
-////	UART_Enter();
-//	Print_String("AT");
-//	time_delay(1);
 
-	esp8266cmd("AT");
-	esp8266cmd("AT+GMR"); // Request Version Type
-	esp8266cmd("AT+CIFSR"); // Find the IP address of the module.
-	esp8266cmd("AT+RST");
+	esp8266cmd("AT\r\n");
+//	esp8266cmd("AT+GMR"); // Request Version Type
+//	esp8266cmd("AT+CIFSR"); // Find the IP address of the module.
+//	esp8266cmd("AT+RST");
+
 //	esp8266cmd("AT+CIPMODE=0");
 //	esp8266cmd("AT+CIPMUX=0");
 //	esp8266cmd("AT+CIPSTART=\"TCP\",\"" SRV_ADDR "\"," SRV_PORT);
-	delay(50);
+	time_delay(3);
 	delay(50);
 }
 
@@ -224,7 +164,7 @@ void esp8266waitrx (const char * cmd)
 	unsigned retry_cnt = 0;
 	uint8_t dAvaliable = UART_DATA_AVALIABLE();
 
-	delay(300);
+	delay(350);
 
 	while((dAvaliable == 0))
 	{
@@ -238,13 +178,6 @@ void esp8266waitrx (const char * cmd)
 
 	    dAvaliable = UART_DATA_AVALIABLE();
 
-//  while (!Serial.available ()) {
-//    ++retry_cnt;
-//    delay (100);
-//
-//    if (retry_cnt > MAX_RETRY_CNT) {
-//      failure (); // Failed to read from ESP8266
-//    }
   }
 }
 
@@ -294,7 +227,7 @@ void esp8266cmd (const char * cmd)
 	delay(50);
 }
 
-void esp8266send (const char * packet)
+void esp8266send(const char * packet)
 {
   unsigned l = strlen (packet) + 2U;
   sprintf (out_buf, "AT+CIPSEND=%d", l);
@@ -303,7 +236,7 @@ void esp8266send (const char * packet)
   esp8266cmd (packet);
 }
 
-void failure ()
+void failure()
 {
 	SEND_FAILED_MESSAGE();
 	time_delay(10);
