@@ -69,12 +69,12 @@ void set_CH_PD_HIGH(void)
 
 void set_RESET_LOW(void)
 {
-	GPIO_setOutputLowOnPin(GPIO_PORT_P6, GPIO_PIN6);
+	GPIO_setOutputLowOnPin(ESP8266_RESET_PORT, ESP8266_RESET_PIN);
 }
 
 void set_RESET_HIGH(void)
 {
-	GPIO_setOutputHighOnPin(GPIO_PORT_P6, GPIO_PIN6);
+	GPIO_setOutputHighOnPin(ESP8266_RESET_PORT, ESP8266_RESET_PIN);
 }
 
 void init_CH_PD_PIN(void);
@@ -82,6 +82,9 @@ void init_CH_PD_PIN(void)
 {
 	set_CH_PD_LOW();
 	GPIO_setAsOutputPin(ESP8266_CH_PD_PORT, ESP8266_CH_PD_PIN);
+
+	set_RESET_LOW();
+	GPIO_setAsOutputPin(ESP8266_RESET_PORT, ESP8266_RESET_PIN);
 //	set_CH_PD_HIGH();
 //	GPIO_setAsOutputPin(ESP8266_RESET_PORT, ESP8266_RESET_PIN);
 //	GPIO_setOutputLowOnPin(ESP8266_RESET_PORT, ESP8266_RESET_PIN);
@@ -169,6 +172,7 @@ void esp8266shutdown ()
 void esp8266poweron ()
 {
 	set_CH_PD_HIGH();
+	set_RESET_HIGH();
 //	set_RESET_LOW();
 //	GPIO_setOutputHighOnPin(ESP8266_CH_PD_PORT, ESP8266_CH_PD_PIN);
 //	digitalWrite (ESP8266_CH_PD_PIN, HIGH);
