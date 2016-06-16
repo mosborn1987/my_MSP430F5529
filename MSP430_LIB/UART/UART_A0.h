@@ -230,7 +230,7 @@ void UARTSendChar( unsigned char send_char)
 
 	////////////////////////////////////////////////////////////////////
 	// Writes the passed value to the UART buffer
-	UCA1TXBUF = send_char;
+	UCA0TXBUF = send_char;
 
 	return;
 

@@ -14,7 +14,7 @@
 ////////////////////////////////////////////////////////////////////////
 // Variable declaration
 static volatile char data;
-unsigned char UART_buffer[100] = "Hellow World - String Init";
+unsigned char UART_buffer[100] = "Hello World - String Init";
 extern unsigned char buffer_index = 0;
 
 // Define Function Prototypes

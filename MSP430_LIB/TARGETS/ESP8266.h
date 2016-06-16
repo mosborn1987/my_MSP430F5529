@@ -198,6 +198,8 @@ void esp8266reboot ()
 	reset_UART_buffer_index();
 
 	esp8266cmd("AT");
+	esp8266cmd("AT+GMR"); // Request Version Type
+	esp8266cmd("AT+CIFSR"); // Find the IP address of the module.
 	esp8266cmd("AT+RST");
 	esp8266cmd("AT+CIPMODE=0");
 	esp8266cmd("AT+CIPMUX=0");
@@ -211,7 +213,7 @@ void esp8266waitrx (const char * cmd)
 	unsigned retry_cnt = 0;
 	uint8_t dAvaliable = UART_DATA_AVALIABLE();
 
-	delay(350);
+	delay(300);
 
 	while((dAvaliable == 0))
 	{
@@ -219,7 +221,7 @@ void esp8266waitrx (const char * cmd)
 		delay(500);
 
 	    if (retry_cnt > MAX_RETRY_CNT) {
-	      failure (); // Failed to read from ESP8266
+//	      failure (); // Failed to read from ESP8266
 
 	      }
 
@@ -259,7 +261,7 @@ void esp8266rx (const char * cmd)
   in_buf[bytes_available+1] = '\0';
 
   if (strstr (in_buf, "ERROR") != NULL) {
-	  UART_TERMINAL_Print_String_NL("Device Returned the Value ERROR");
+//	  UART_TERMINAL_Print_String_NL("Device Returned the Value ERROR");
     failure (); // ESP8266 returned error
   }
 }
