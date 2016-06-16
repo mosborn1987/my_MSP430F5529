@@ -24,8 +24,8 @@
 //#include <DHT22_430.h>
 
 
-//#define SRV_ADDR "192.168.1.100"
-#define SRV_ADDR "192.168.4.1"
+#define SRV_ADDR "192.168.1.100"
+//#define SRV_ADDR "192.168.4.1"
 #define SRV_PORT "9977"
 
 //#define DHT_PIN P2_1
@@ -151,29 +151,40 @@ void esp8266reboot ()
 	reset_UART_buffer_index();
 
 	esp8266cmd("AT");
+	time_delay(2);
 //	esp8266cmd("AT+RST");
 //	time_delay(20);
 //	esp8266cmd("AT+GMR"); // Request Firmware Version Type
 //	esp8266cmd("AT+CWJAP="",""");
-	time_delay(2);
-	esp8266cmd("AT+CWJAP?");
-	time_delay(20);
+
+
+	// Use this
+//	esp8266cmd("AT+CWJAP?");
+//	time_delay(20);
 
 	// Check to see which Networks are in your area
-	esp8266cmd("AT+CWLAP");
-	time_delay(20);
+//	esp8266cmd("AT+CWLAP");
+//	time_delay(20);
 
 	// Join My network
-	esp8266cmd("AT+CWJAP=\"TP-LINK_7E50DA\",\"98195916\"");
+//	esp8266cmd("AT+CWJAP=\"TP-LINK_7E50DA\",\"98195916\"");
 
-	esp8266cmd("AT+CIFSR"); // Find the IP address of the module.
+//	esp8266cmd("AT+CIFSR"); // Find the IP address of the module.
+//	time_delay(2);
+
+	esp8266cmd("AT+CIPMUX=1");
+	time_delay(1);
+
+
+//	esp8266cmd("AT+CIPMODE=0");
+//	esp8266cmd("AT+CIPMUX=0");
+//	esp8266cmd("AT+CIPSTART=\"TCP\",\"192.168.1.100\",\"9977\"");
+
+	esp8266cmd("AT+CIPSTART=0,\"TCP\",\"8.8.8.8\",80");
 	time_delay(20);
 
 	//	esp8266cmd("AT+RST");
 
-//	esp8266cmd("AT+CIPMODE=0");
-//	esp8266cmd("AT+CIPMUX=0");
-//	esp8266cmd("AT+CIPSTART=\"TCP\",\"" SRV_ADDR "\"," SRV_PORT);
 	time_delay(20);
 
 	delay(50);
