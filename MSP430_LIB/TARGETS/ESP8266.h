@@ -23,7 +23,9 @@
 
 //#include <DHT22_430.h>
 
-#define SRV_ADDR "192.168.1.100"
+
+//#define SRV_ADDR "192.168.1.100"
+#define SRV_ADDR "192.168.4.1"
 #define SRV_PORT "9977"
 
 //#define DHT_PIN P2_1
@@ -133,7 +135,7 @@ void esp8266poweron ()
 {
 	set_CH_PD_HIGH();
 	set_RESET_HIGH();
-	time_delay(11);
+	time_delay(17);
 
 }
 
@@ -144,18 +146,26 @@ void esp8266reboot ()
 	esp8266poweron();
 
 	reset_UART_buffer_index();
-	time_delay(11);
+//	time_delay(11);
 	reset_UART_buffer_index();
 
-	esp8266cmd("AT\r\n");
-//	esp8266cmd("AT+GMR"); // Request Version Type
+	esp8266cmd("AT");
+//	esp8266cmd("AT+RST");
+//	time_delay(20);
+//	esp8266cmd("AT+GMR"); // Request Firmware Version Type
+//	esp8266cmd("AT+CWJAP="",""");
+	time_delay(2);
+	esp8266cmd("AT+CWJAP?");
+	time_delay(20);
+	esp8266cmd("AT+CWLAP");
 //	esp8266cmd("AT+CIFSR"); // Find the IP address of the module.
 //	esp8266cmd("AT+RST");
 
 //	esp8266cmd("AT+CIPMODE=0");
 //	esp8266cmd("AT+CIPMUX=0");
 //	esp8266cmd("AT+CIPSTART=\"TCP\",\"" SRV_ADDR "\"," SRV_PORT);
-	time_delay(3);
+	time_delay(20);
+
 	delay(50);
 }
 
