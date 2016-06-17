@@ -167,7 +167,8 @@ void esp8266reboot ()
 //	time_delay(20);
 
 	// Join My network
-//	esp8266cmd("AT+CWJAP=\"TP-LINK_7E50DA\",\"98195916\"");
+	esp8266cmd("AT+CWJAP=\"TP-LINK_7E50DA\",\"98195916\"");
+	time_delay(20);
 
 //	esp8266cmd("AT+CIFSR"); // Find the IP address of the module.
 //	time_delay(2);
@@ -175,12 +176,12 @@ void esp8266reboot ()
 	esp8266cmd("AT+CIPMUX=1");
 	time_delay(1);
 
-
+	esp8266cmd("AT+CIPSTART=\"TCP\",\"www.google.com\",80");
 //	esp8266cmd("AT+CIPMODE=0");
 //	esp8266cmd("AT+CIPMUX=0");
 //	esp8266cmd("AT+CIPSTART=\"TCP\",\"192.168.1.100\",\"9977\"");
 
-	esp8266cmd("AT+CIPSTART=0,\"TCP\",\"8.8.8.8\",80");
+//	esp8266cmd("AT+CIPSTART=0,\"TCP\",\"192.168.3.116\",8080");//0,\"TCP\",\"8.8.8.8\",80");
 	time_delay(20);
 
 	//	esp8266cmd("AT+RST");
