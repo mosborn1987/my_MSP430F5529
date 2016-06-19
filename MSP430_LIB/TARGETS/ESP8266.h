@@ -180,9 +180,9 @@ void esp8266reboot ()
 	time_delay(20);
 
 	esp8266cmd("AT+CIPSEND=18");
-	time_delay(20);
+	time_delay(25);
 
-	esp8266cmd("GET / HTTP/1.0\r\n\r\n");
+	esp8266cmd("GET / HTTP/1.0\r\n");
 
 //	esp8266cmd("AT+CIPMODE=0");
 //	esp8266cmd("AT+CIPMUX=0");
