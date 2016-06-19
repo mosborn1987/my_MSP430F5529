@@ -18,129 +18,67 @@
 #include <time.h>
 //#include <ISR_UART.h>
 
-
-//#include "tones.h"
-
-//#include <DHT22_430.h>
-
-
 #define SRV_ADDR "192.168.1.100"
 //#define SRV_ADDR "192.168.4.1"
 #define SRV_PORT "9977"
 
-//#define DHT_PIN P2_1
+//		CH_PD: Port and Pin
 #define ESP8266_CH_PD_PORT GPIO_PORT_P1
 #define ESP8266_CH_PD_PIN  GPIO_PIN6
+
+//		Reset: Port and Pin
 #define ESP8266_RESET_PORT GPIO_PORT_P6
 #define ESP8266_RESET_PIN  GPIO_PIN6
-
-//#define BUZZER_PIN P1_4
-//#define RED_LED P1_0
 
 #define MAX_IN_BUF_SZ 64U
 #define MAX_OUT_BUF_SZ 64U
 #define MAX_AUX_BUF_SZ 32U
 
-#define MEASUREMENTS_DELAY_S 60U
-//#define ALARM_DELAY_MS 1000U
+//#define MEASUREMENTS_DELAY_S 60U
 #define MAX_RETRY_CNT 100U
 
 char in_buf[MAX_IN_BUF_SZ];
 char out_buf[MAX_OUT_BUF_SZ];
 char aux_buf[MAX_AUX_BUF_SZ];
 
-//DHT22 dht (DHT_PIN);
-void delay(uint8_t delay_cycles);
-void delay(uint8_t delay_cycles)
-{
-	while(delay_cycles>0)
-	{
-		_delay_cycles(1);
-		delay_cycles--;
-	}
-}
-
-void set_CH_PD_LOW(void)
-{
-	GPIO_setOutputLowOnPin(ESP8266_CH_PD_PORT, ESP8266_CH_PD_PIN);
-}
-void set_CH_PD_HIGH(void)
-{
-	GPIO_setOutputHighOnPin(ESP8266_CH_PD_PORT, ESP8266_CH_PD_PIN);
-}
-
-void set_RESET_LOW(void)
-{
-	GPIO_setOutputLowOnPin(ESP8266_RESET_PORT, ESP8266_RESET_PIN);
-}
-
-void set_RESET_HIGH(void)
-{
-	GPIO_setOutputHighOnPin(ESP8266_RESET_PORT, ESP8266_RESET_PIN);
-}
-
+//   CH_PD Pin Funcitons
 void init_CH_PD_PIN(void);
-void init_CH_PD_PIN(void)
-{
-	set_CH_PD_LOW();
-	GPIO_setAsOutputPin(ESP8266_CH_PD_PORT, ESP8266_CH_PD_PIN);
+void set_CH_PD_LOW(void);
+void set_CH_PD_HIGH(void);
 
-	set_RESET_LOW();
-	GPIO_setAsOutputPin(ESP8266_RESET_PORT, ESP8266_RESET_PIN);
+//   RESET Pin Functions
+void init_RESET_PIN(void);
+void set_RESET_HIGH(void);
+void set_RESET_LOW(void);
 
-	return;
-}
+//   Admin Functions
+void ESP8266_setup();
+void esp8266reboot();
+void esp8266shutdown();
+void esp8266poweron();
+
+void delay(uint8_t delay_cycles);
+
+//   Functions
 
 void ESP8266_setup()
 {
-	// buzzer not needed.
-//	pinMode (BUZZER_PIN, OUTPUT);
-
-
-    // Init A1
+	// Init A1
     UART_TERMINAL_init();
 
     // Init A0
     UART_init(115200);
-//    print_UART_buffer();
 
 	//pinMode (ESP8266_CH_PD_PIN, OUTPUT);
 	init_CH_PD_PIN();
-
-
-//	Serial.begin (115200);
-
-//	dht.begin ();
+	init_RESET_PIN();
 
     esp8266reboot();
 
 }
 
-
-
-void SEND_FAILED_MESSAGE ()
-{
-//	UART_TERMINAL_Print_String_NL("THE PROCESSS FAILED:");
-//	print_UART_buffer();
-}
-
-void esp8266shutdown ()
-{
-	set_CH_PD_LOW();
-	set_RESET_LOW();
-	time_delay(1);
-}
-
-void esp8266poweron ()
-{
-	set_CH_PD_HIGH();
-	set_RESET_HIGH();
-	time_delay(17);
-
-}
-
 //char my_network_cmd[] = "AT+CWJAP= TP-LINK_7E50DA, 98195916";
-void esp8266reboot ()
+void esp8266reboot()
 {
 	__bis_SR_register(GIE);
 	esp8266shutdown();
@@ -202,6 +140,76 @@ void esp8266reboot ()
 
 	}
 }
+
+
+
+
+
+
+
+
+void delay(uint8_t delay_cycles)
+{
+	while(delay_cycles>0)
+	{
+		_delay_cycles(1);
+		delay_cycles--;
+	}
+}
+
+
+void set_CH_PD_LOW(void)
+{
+	GPIO_setOutputLowOnPin(ESP8266_CH_PD_PORT, ESP8266_CH_PD_PIN);
+}
+void set_CH_PD_HIGH(void)
+{
+	GPIO_setOutputHighOnPin(ESP8266_CH_PD_PORT, ESP8266_CH_PD_PIN);
+}
+
+void set_RESET_LOW(void)
+{
+	GPIO_setOutputLowOnPin(ESP8266_RESET_PORT, ESP8266_RESET_PIN);
+}
+
+void set_RESET_HIGH(void)
+{
+	GPIO_setOutputHighOnPin(ESP8266_RESET_PORT, ESP8266_RESET_PIN);
+}
+
+void init_RESET_PIN(void)
+{
+	set_RESET_LOW();
+	GPIO_setAsOutputPin(ESP8266_RESET_PORT, ESP8266_RESET_PIN);
+	return;
+}
+void init_CH_PD_PIN(void)
+{
+	set_CH_PD_LOW();
+	GPIO_setAsOutputPin(ESP8266_CH_PD_PORT, ESP8266_CH_PD_PIN);
+
+	return;
+}
+
+
+
+
+void esp8266shutdown()
+{
+	set_CH_PD_LOW();
+	set_RESET_LOW();
+	time_delay(1);
+}
+
+void esp8266poweron()
+{
+	set_CH_PD_HIGH();
+	set_RESET_HIGH();
+	time_delay(17);
+
+}
+
+
 
 void esp8266waitrx (const char * cmd)
 {
@@ -282,7 +290,6 @@ void esp8266send(const char * packet)
 
 void failure()
 {
-	SEND_FAILED_MESSAGE();
 	time_delay(10);
 //  pinMode (RED_LED, OUTPUT);
 //
