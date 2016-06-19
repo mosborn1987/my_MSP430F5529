@@ -115,7 +115,7 @@ void UART_get_array(unsigned char *RxArray, unsigned char number_of_chars)
 
 		//////////////////////////////////////////////////////////////
 		// Return data to the pointed locations
-		*RxArray = data;
+		*RxArray = UCA0RXBUF;//data;
 
 		//////////////////////////////////////////////////////////////
 		// Increments the array pointer value
