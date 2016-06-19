@@ -82,95 +82,6 @@ void esp8266reboot()
 	esp8266shutdown();
 	esp8266poweron();
 
-	reset_UART_buffer_index();
-//	time_delay(11);
-	reset_UART_buffer_index();
-
-	esp8266cmd("AT");
-	time_delay(2);
-//	esp8266cmd("AT+RST");
-//	time_delay(20);
-//	esp8266cmd("AT+GMR"); // Request Firmware Version Type
-//	esp8266cmd("AT+CWJAP="",""");
-
-
-	// Use this
-//	esp8266cmd("AT+CWJAP?");
-//	time_delay(20);
-
-	// Check to see which Networks are in your area
-//	esp8266cmd("AT+CWLAP");
-//	time_delay(20);
-
-	// Join My network
-	esp8266cmd("AT+CWJAP=\"TP-LINK_7E50DA\",\"98195916\"");
-	time_delay(25);
-
-//	esp8266cmd("AT+CIFSR"); // Find the IP address of the module.
-//	time_delay(2);
-
-	esp8266cmd("AT+CIPMUX=1");
-	time_delay(20);
-
-	esp8266cmd("AT+CIPSTART=\"TCP\",\"www.google.com\",80");
-	time_delay(20);
-
-	esp8266cmd("AT+CIPSEND=18");
-	time_delay(25);
-
-	esp8266cmd("GET / HTTP/1.0\r\n");
-
-//	esp8266cmd("AT+CIPMODE=0");
-//	esp8266cmd("AT+CIPMUX=0");
-//	esp8266cmd("AT+CIPSTART=\"TCP\",\"192.168.1.100\",\"9977\"");
-
-//	esp8266cmd("AT+CIPSTART=0,\"TCP\",\"192.168.3.116\",8080");//0,\"TCP\",\"8.8.8.8\",80");
-	time_delay(20);
-
-	//	esp8266cmd("AT+RST");
-
-
-
-
-	while(1)
-	{
-		time_delay(40);
-
-	}
-}
-
-
-void set_CH_PD_LOW(void)
-{
-	GPIO_setOutputLowOnPin(ESP8266_CH_PD_PORT, ESP8266_CH_PD_PIN);
-}
-void set_CH_PD_HIGH(void)
-{
-	GPIO_setOutputHighOnPin(ESP8266_CH_PD_PORT, ESP8266_CH_PD_PIN);
-}
-
-void set_RESET_LOW(void)
-{
-	GPIO_setOutputLowOnPin(ESP8266_RESET_PORT, ESP8266_RESET_PIN);
-}
-
-void set_RESET_HIGH(void)
-{
-	GPIO_setOutputHighOnPin(ESP8266_RESET_PORT, ESP8266_RESET_PIN);
-}
-
-void init_RESET_PIN(void)
-{
-	set_RESET_LOW();
-	GPIO_setAsOutputPin(ESP8266_RESET_PORT, ESP8266_RESET_PIN);
-	return;
-}
-void init_CH_PD_PIN(void)
-{
-	set_CH_PD_LOW();
-	GPIO_setAsOutputPin(ESP8266_CH_PD_PORT, ESP8266_CH_PD_PIN);
-
-	return;
 }
 
 
@@ -185,7 +96,7 @@ void esp8266poweron()
 {
 	set_CH_PD_HIGH();
 	set_RESET_HIGH();
-	time_delay(17);
+	time_delay(30);
 
 }
 
@@ -266,6 +177,41 @@ void esp8266send(const char * packet)
   esp8266cmd (packet);
 }
 
+
+void set_CH_PD_LOW(void)
+{
+	GPIO_setOutputLowOnPin(ESP8266_CH_PD_PORT, ESP8266_CH_PD_PIN);
+}
+void set_CH_PD_HIGH(void)
+{
+	GPIO_setOutputHighOnPin(ESP8266_CH_PD_PORT, ESP8266_CH_PD_PIN);
+}
+
+void set_RESET_LOW(void)
+{
+	GPIO_setOutputLowOnPin(ESP8266_RESET_PORT, ESP8266_RESET_PIN);
+}
+
+void set_RESET_HIGH(void)
+{
+	GPIO_setOutputHighOnPin(ESP8266_RESET_PORT, ESP8266_RESET_PIN);
+}
+
+void init_RESET_PIN(void)
+{
+	set_RESET_LOW();
+	GPIO_setAsOutputPin(ESP8266_RESET_PORT, ESP8266_RESET_PIN);
+	return;
+}
+void init_CH_PD_PIN(void)
+{
+	set_CH_PD_LOW();
+	GPIO_setAsOutputPin(ESP8266_CH_PD_PORT, ESP8266_CH_PD_PIN);
+
+	return;
+}
+
+
 void failure()
 {
 	time_delay(10);
@@ -285,6 +231,65 @@ void failure()
 //
 //    ++cnt;
 //  }
+}
+
+void example(void)
+{
+	reset_UART_buffer_index();
+//	time_delay(11);
+	reset_UART_buffer_index();
+
+	esp8266cmd("AT");
+	time_delay(2);
+//	esp8266cmd("AT+RST");
+//	time_delay(20);
+//	esp8266cmd("AT+GMR"); // Request Firmware Version Type
+//	esp8266cmd("AT+CWJAP="",""");
+
+
+	// Use this
+//	esp8266cmd("AT+CWJAP?");
+//	time_delay(20);
+
+	// Check to see which Networks are in your area
+//	esp8266cmd("AT+CWLAP");
+//	time_delay(20);
+
+	// Join My network
+	esp8266cmd("AT+CWJAP=\"TP-LINK_7E50DA\",\"98195916\"");
+	time_delay(25);
+
+//	esp8266cmd("AT+CIFSR"); // Find the IP address of the module.
+//	time_delay(2);
+
+	esp8266cmd("AT+CIPMUX=1");
+	time_delay(20);
+
+	esp8266cmd("AT+CIPSTART=\"TCP\",\"www.google.com\",80");
+	time_delay(20);
+
+	esp8266cmd("AT+CIPSEND=18");
+	time_delay(25);
+
+	esp8266cmd("GET / HTTP/1.0\r\n");
+
+//	esp8266cmd("AT+CIPMODE=0");
+//	esp8266cmd("AT+CIPMUX=0");
+//	esp8266cmd("AT+CIPSTART=\"TCP\",\"192.168.1.100\",\"9977\"");
+
+//	esp8266cmd("AT+CIPSTART=0,\"TCP\",\"192.168.3.116\",8080");//0,\"TCP\",\"8.8.8.8\",80");
+	time_delay(20);
+
+	//	esp8266cmd("AT+RST");
+
+
+
+
+	while(1)
+	{
+		time_delay(40);
+
+	}
 }
 
 

@@ -22,6 +22,11 @@ void main(void)
 
 
     ESP8266_setup();
+    while(1)
+    {
+    	esp8266cmd("AT");
+		time_delay(2);
+    }
 
 }
 
