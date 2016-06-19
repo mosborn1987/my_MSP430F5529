@@ -101,7 +101,7 @@ void ESP8266_setup()
     UART_TERMINAL_init();
 
     // Init A0
-    UART_init();
+    UART_init(115200);
 //    print_UART_buffer();
 
 	//pinMode (ESP8266_CH_PD_PIN, OUTPUT);
