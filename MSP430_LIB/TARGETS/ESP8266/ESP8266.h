@@ -57,8 +57,6 @@ void esp8266reboot();
 void esp8266shutdown();
 void esp8266poweron();
 
-void delay(uint8_t delay_cycles);
-
 //   Functions
 
 void ESP8266_setup()
@@ -142,22 +140,6 @@ void esp8266reboot()
 }
 
 
-
-
-
-
-
-
-void delay(uint8_t delay_cycles)
-{
-	while(delay_cycles>0)
-	{
-		_delay_cycles(1);
-		delay_cycles--;
-	}
-}
-
-
 void set_CH_PD_LOW(void)
 {
 	GPIO_setOutputLowOnPin(ESP8266_CH_PD_PORT, ESP8266_CH_PD_PIN);
@@ -192,8 +174,6 @@ void init_CH_PD_PIN(void)
 }
 
 
-
-
 void esp8266shutdown()
 {
 	set_CH_PD_LOW();
@@ -208,8 +188,6 @@ void esp8266poweron()
 	time_delay(17);
 
 }
-
-
 
 void esp8266waitrx (const char * cmd)
 {
