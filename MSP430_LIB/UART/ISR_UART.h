@@ -13,9 +13,21 @@
 #include <string.h>
 ////////////////////////////////////////////////////////////////////////
 // Variable declaration
-static volatile char data;
-unsigned char UART_buffer[100] = "Hello World - String Init";
+#define UART_buffer_Row 100
+unsigned char UART_buffer[UART_buffer_Row];
 extern unsigned char buffer_index = 0;
+static volatile char data;
+
+// New Functions
+void select_UART_buffer(char * p_BUFFER);
+char * p_UART_Buffer = NULL;
+
+void select_UART_buffer(char * p_BUFFER)
+{
+	p_UART_Buffer = p_BUFFER;
+	return;
+}
+
 
 // Define Function Prototypes
 void copy_UART_buffer(char *dest_array);

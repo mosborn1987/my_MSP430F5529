@@ -20,13 +20,13 @@ void main(void)
     WDT_A_hold(WDT_A_BASE);
 
 
-
-    ESP8266_setup();
-    while(1)
-    {
-    	esp8266cmd("AT");
-		time_delay(2);
-    }
+//
+//    ESP8266_setup();
+//    while(1)
+//    {
+//    	esp8266cmd("AT");
+//		time_delay(2);
+//    }
 
 }
 
